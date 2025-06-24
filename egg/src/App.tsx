@@ -20,10 +20,10 @@ function App() {
         {pages.map(page => (
           <button
             key={page.id}
-            className="sidebar-button"
+            className={`sidebar-button btn-menu ${activePage === page.id ? 'active' : ''}`}
             onClick={() => setActivePage(page.id)}
           >
-            {page.label}
+            <span>{page.label}</span>
           </button>
         ))}
       </div>
