@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from interface import pump, get_data
+from interface import pump, get_json
 
 app = Flask(__name__)
 CORS(app)
@@ -12,7 +12,7 @@ def start_pump():
 
 @app.route("/api/data", methods=["GET"])
 def data():
-    data = get_data()
+    data = get_json()
     return jsonify(data)
 
 if __name__ == "__main__":
