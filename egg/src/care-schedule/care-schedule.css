@@ -28,6 +28,7 @@
 
 .schedule-drop{
   display: flex;
+  justify-content: center;
   width: 10%;
   height: 10%;
   margin-top: 10px;
