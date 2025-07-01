@@ -10,6 +10,20 @@ def pump():
     pump_off()
     return
 
+def fan1_on_for(duration):
+    # Turns on fan 1 for specified amount of seconds
+    fan1_on()
+    time.sleep(duration)
+    fan1_off()
+    return
+
+def fan2_on_for(duration):
+    # Turns on fan 2 for specified amount of seconds
+    fan2_on()
+    time.sleep(duration)
+    fan2_off()
+    return
+
 def pump_on():
     # Turn pump ON
     response = requests.get(f"http://{arduino_ip}/pump/on")
@@ -29,7 +43,31 @@ def get_json():
     data = response.json()
     return data
 
+def fan1_on():
+    # Turn fan 1 ON
+    response = requests.get(f"http://{arduino_ip}/fan1/on")
+    print("Fan 1 ON:", response.status_code)
+    return
+
+def fan1_off():
+    # Turn fan 1 OFF
+    response = requests.get(f"http://{arduino_ip}/fan1/off")
+    print("Fan 1 OFF:", response.status_code)
+    return
+
+def fan2_on():
+    # Turn fan 2 ON
+    response = requests.get(f"http://{arduino_ip}/fan2/on")
+    print("Fan 2 ON:", response.status_code)
+    return
+
+def fan2_off():
+    # Turn fan 2 OFF
+    response = requests.get(f"http://{arduino_ip}/fan2/off")
+    print("Fan 2 OFF:", response.status_code)
+    return
+
 # uncomment to test the pump_on() and pump_off() functions
 # pump()            
-json = get_json()
-print(json)
+# json = get_json()
+# print(json)
