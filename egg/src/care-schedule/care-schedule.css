@@ -2,6 +2,7 @@
 
 .landing-page {
   display: flex;
+  flex-direction: column;
   flex: 1;
   margin-left: 20vw;
   width: calc(100vw - 20vw);
