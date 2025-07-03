@@ -1,3 +1,6 @@
+# This file holds basic IoT http requests and
+# abstracts them into easily readable python functions
+
 import requests
 import time
 
