@@ -1,8 +1,13 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 # Make sure to run from egg/backend, with "python sqlite_test.py"
 # To run with the daily average code, run with any additional cmd line parameter, ex. "python sqlite_test a"
+=======
+# This file creates a test sqlite database from
+# the /data.json http request
+>>>>>>> Stashed changes
 =======
 # This file creates a test sqlite database from
 # the /data.json http request
