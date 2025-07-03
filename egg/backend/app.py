@@ -1,3 +1,6 @@
+# This file connects python functions to React using the Flask library
+# TODO: Figure out how python to React works
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from interface import pump, get_json
