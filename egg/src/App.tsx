@@ -26,6 +26,8 @@ function App() {
             <span>{page.label}</span>
           </button>
         ))}
+        
+
       </div>
 
       {/* Page container grows to fill the rest */}
