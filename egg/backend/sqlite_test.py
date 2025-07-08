@@ -19,7 +19,7 @@ refresh = 1
 while(True):
 
     print()
-    print("Refresh:", refresh, '\n')
+    print("Refresh:", refresh)
     with sqlite3.connect('egg_test.db') as conn:    
         cursor = conn.cursor()    
         cursor.execute('''CREATE TABLE IF NOT EXISTS eggbase (
@@ -43,6 +43,8 @@ while(True):
             sql = "INSERT OR IGNORE INTO eggbase (timestamp, temperature_celcius, humidity, heat_index_celcius, moisture_one," \
                   "moisture_two, nitrogen, phosphorus, potassium) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
             cursor.execute(sql, val)
+        
+        print("Json loaded!")
 
         # Daily averaging code
         if(len(sys.argv) > 1):
