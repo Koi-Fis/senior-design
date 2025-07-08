@@ -3,6 +3,8 @@ import interface
 import time
 
 def water_plants(period):
+    print("Running water_plants in tasks.py")
+
     period = int(period)*60 # input recast as an int and converted from minutes to seconds
 
     interface.pump_on()
@@ -12,12 +14,16 @@ def water_plants(period):
     return
 
 def check_sensors():
+    print("Running check_sensors in tasks.py")
+
     data = interface.get_json()[-1] # display latest entry
     print(data)
 
     return
 
 def run_fans(period):
+    print("Running run_fans in tasks.py")
+
     period = int(period)*60 # input recast as an int and converted from minutes to seconds
 
     interface.fan1_on()
