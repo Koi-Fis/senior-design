@@ -1,6 +1,12 @@
 #!/bin/bash
 
-echo "Running water_plants.bash at %(date)"
+echo "Running water_plants.bash at $(date)"
 
-# Task will run here
-python tasks.py water_plants 1
+# Absolute path to Python
+PYTHON="/usr/bin/python3"
+
+# Absolute path to the script
+SCRIPT="/home/djd5603/senior-design/egg/backend/tasks.py"
+
+# Run the task
+$PYTHON $SCRIPT water_plants 1

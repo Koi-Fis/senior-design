@@ -1,8 +1,12 @@
 #!/bin/bash
 
-echo "Running check_sensors.bash at %(date)"
+echo "Running check_sensors.bash at $(date)"
 
-# Task will run here
-python tasks.py check_sensors
+# Absolute path to Python
+PYTHON="/usr/bin/python3"
 
-echo "Sensor data has been downloaded."
+# Absolute path to the script
+SCRIPT="/home/djd5603/senior-design/egg/backend/tasks.py"
+
+# Run the task
+$PYTHON $SCRIPT check_sensors
