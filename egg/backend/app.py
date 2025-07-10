@@ -3,10 +3,15 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from interface import pump, get_json
+from interface import pump, fan1_on, fan2_on, fan1_off, fan2_off, get_json
+import time
 
 app = Flask(__name__)
 CORS(app)
+
+@app.route("/")
+def hello():
+    return "<p>Hello, World!</p>"
 
 @app.route("/api/pump", methods=["POST"])
 def start_pump():
@@ -17,6 +22,15 @@ def start_pump():
 def data():
     data = get_json()
     return jsonify(data)
+
+@app.route("/api/fans", methods=["GET"])
+def fans():
+    fan1_on()
+    fan2_on()
+    time.sleep(5)
+    fan1_off()
+    fan2_off()
+    return "<p>Hello, fans!</p>"
 
 if __name__ == "__main__":
     app.run(port=5173)
