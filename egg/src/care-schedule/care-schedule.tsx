@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import "bootstrap5-toggle/css/bootstrap5-toggle.min.css";
+
 import './care-schedule.css';
 import React, { useState } from 'react';
 import usePumpSchedule from './usePumpSchedule';
@@ -23,8 +23,8 @@ function CareSchedule() {
     enabled,
     time,
     frequency,
-    urlOn: "http://192.168.50.169/pump/on",
-    urlOff: "http://192.168.50.169/pump/off"
+    urlOn: "http://192.168.50.169/fan1/on",
+    urlOff: "http://192.168.50.169/fan1/off"
   });
 
   return (

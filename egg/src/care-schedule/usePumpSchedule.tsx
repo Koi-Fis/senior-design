@@ -40,13 +40,15 @@ export default function usePumpSchedule({ enabled, time, frequency, urlOn, urlOf
       const delay = next.getTime() - Date.now();
 
       timerId.current = setTimeout(async () => {
+        let pumpOnTime = Date.now();
         try {
           // Turn pump ON
           const response = await fetch(urlOn);
           if (!response.ok) throw new Error('HTTP error! Failed to turn on pump');
           // Optionally: notify success
 
-          // Schedule pump OFF after 15 seconds (15000ms)
+          // Schedule pump OFF exactly 15 seconds after pump ON
+          const offDelay = Math.max(0, 15000 - (Date.now() - pumpOnTime));
           offTimerId.current = setTimeout(async () => {
             try {
               const offResponse = await fetch(urlOff);
@@ -55,7 +57,7 @@ export default function usePumpSchedule({ enabled, time, frequency, urlOn, urlOf
             } catch (error) {
               // Optionally: handle error
             }
-          }, 15000);
+          }, offDelay);
 
         } catch (error) {
           // Optionally: notify error
