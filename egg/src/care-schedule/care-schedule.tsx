@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
 import { useState, useEffect } from "react";
 import useDeviceSchedule from "./usePumpSchedule";
+=======
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import './care-schedule.css';
+import React, { useState } from 'react';
+import usePumpSchedule from './usePumpSchedule';
+>>>>>>> d17bf9c (changes to turn on and turn off logic)
 
 type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
 
@@ -116,6 +124,7 @@ function CareSchedule() {
   const enabledLight = loadFromStorage<boolean>("lightEnabled", false);
   const enabledFan = loadFromStorage<boolean>("fanEnabled", false);
 
+<<<<<<< HEAD
   const [waterTime, setWaterTime] = useState<string>(() =>
     enabledWater ? loadFromStorage("waterTime", "") : ""
   );
@@ -202,6 +211,15 @@ function CareSchedule() {
     frequency: fanFreq,
     urlOn: "http://127.0.0.1:5173/api/fans_on",
     urlOff: "http://127.0.0.1:5173/api/fans_off",
+=======
+  // Use the scheduling hook for the water tab
+  usePumpSchedule({
+    enabled,
+    time,
+    frequency,
+    urlOn: "http://192.168.50.169/fan1/on",
+    urlOff: "http://192.168.50.169/fan1/off"
+>>>>>>> d17bf9c (changes to turn on and turn off logic)
   });
 
   return (
