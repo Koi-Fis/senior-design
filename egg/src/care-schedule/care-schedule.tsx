@@ -213,8 +213,8 @@ function CareSchedule() {
     urlOff: "http://127.0.0.1:5173/api/fans_off",
 =======
   // Use the scheduling hook for the water tab
-  usePumpSchedule({
-    enabled,
+  useDeviceSchedule({
+    enabled: waterEnabled,
     time,
     frequency,
     urlOn: "http://192.168.50.169/fan1/on",
