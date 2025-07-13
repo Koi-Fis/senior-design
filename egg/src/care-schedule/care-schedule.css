@@ -12,7 +12,7 @@
 }
 
 .schedule-container{
-  
+  font-family: 'Pixelify Sans', sans-serif;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -47,10 +47,10 @@
 
 
 
-#water-tab-pane {
+.tab-pane {
   display: flex;
   flex-direction: column;
-  color: rgb(185, 105, 105);
+  color: rgb(0, 0, 0);
   background-color: rgb(255, 255, 255);
   padding: 3rem;
   width: 100%;
@@ -121,3 +121,6 @@ input:checked + .slider:before {
   content: "";
   color: black;
 }
+
+
+

@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './care-schedule.css';
 import React, { useState } from 'react';
-import usePumpSchedule from './usePumpSchedule';
+import useDeviceSchedule from './usePumpSchedule';
 
 
 function CareSchedule() {
@@ -15,23 +15,44 @@ function CareSchedule() {
 
   // Watering schedule state
   const [time, setTime] = useState<string>('');
-  const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'bi-weekly'>('daily');
-  const [enabled, setEnabled] = useState<boolean>(false);
+  const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'bi-weekly' | 'every other day'>('daily');
+  const [waterEnabled, setWaterEnabled] = useState(false);
+  const [LightEnabled, setLightEnabled] = useState(false);
+  const [FanEnabled, setFanEnabled] = useState(false);
+
 
   // Use the scheduling hook for the water tab
-  usePumpSchedule({
-    enabled,
+  useDeviceSchedule({
+    enabled: waterEnabled,
     time,
     frequency,
-    urlOn: "http://192.168.50.169/fan1/on",
-    urlOff: "http://192.168.50.169/fan1/off"
+    urlOn: "http://192.168.50.169/water/on",
+    urlOff: "http://192.168.50.169/water/off"
   });
+
+  // Grow light schedule
+useDeviceSchedule({
+  enabled: LightEnabled,
+  time,
+  frequency,
+  urlOn: "http://192.168.50.169/grow_light/on",
+  urlOff: "http://192.168.50.169/grow_light/off"
+});
+
+// Fan schedule
+useDeviceSchedule({
+  enabled: FanEnabled,
+  time,
+  frequency,
+  urlOn: "http://192.168.50.169/fan/on",
+  urlOff: "http://192.168.50.169/fan/off"
+});
 
   return (
     <div className="landing-page">
       <div className="schedule-container">
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
-          <h1 className="text-center">Care Schedule</h1>
+          <h1 className="text-center">&#127804; Care Schedule</h1>
         </header>
 
         <ul className="nav nav-tabs" id="myTab" role="tablist">
@@ -61,40 +82,41 @@ function CareSchedule() {
             aria-labelledby="water-tab"
             tabIndex={0}
           >
-            <div className="wtr-in mb-2">
-              <label htmlFor="wtr-time" className="form-label mb-0 me-2">Schedule:</label>
+            <div className="wtr-in">
+              <label htmlFor="wtr-time" className="form-label">Schedule:</label>
               <input
                 type="time"
                 id="wtr-time"
                 className="form-control form-control-sm me-2"
                 value={time}
                 onChange={e => setTime(e.target.value)}
-                disabled={enabled}
+                disabled={waterEnabled}
               />
             </div>
-            <div className="wtr-in mb-2">
-              <label htmlFor="wtr-frequency" className="form-label mb-0 me-2">Frequency:</label>
+            <div className="wtr-in">
+              <label htmlFor="wtr-frequency" className="form-label">Frequency:</label>
               <select
                 id="wtr-frequency"
                 className="form-select form-select-sm me-2"
                 value={frequency}
-                onChange={e => setFrequency(e.target.value as 'daily' | 'weekly' | 'bi-weekly')}
-                disabled={enabled}
+                onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
+                disabled={waterEnabled}
               >
                 <option value="daily">Daily</option>
+                <option value="every other day">Every other day</option>
                 <option value="weekly">Weekly</option>
                 <option value="bi-weekly">Bi-Weekly</option>
               </select>
             </div>
             {/* Switch */}
-            <div className="form-check form-switch">
+            <div className="form-check form-switch switch">
               <label className="switch">
                 <input
                   className="form-check-input que-switch"
                   type="checkbox"
                   id="checkNativeSwitch"
-                  checked={enabled}
-                  onChange={e => setEnabled(e.target.checked)}
+                  checked={waterEnabled}
+                  onChange={e => setWaterEnabled(e.target.checked)}
                 />
                 <span className="slider"></span>
               </label>
@@ -109,18 +131,95 @@ function CareSchedule() {
             aria-labelledby="grow_light-tab"
             tabIndex={0}
           >
-            <button>hi</button>
+             <div className="grow-light-in wtr-in">
+              <label htmlFor="grow-light-time" className="form-label">Schedule:</label>
+              <input
+                type="time"
+                id="grow-light-time"
+                className="form-control form-control-sm me-2"
+                value={time}
+                onChange={e => setTime(e.target.value)}
+                disabled={LightEnabled}
+              />
+            </div>
+            <div className="grow-light-in wtr-in">
+              <label htmlFor="grow-light-frequency" className="form-label">Frequency:</label>
+              <select
+                id="grow-light-frequency"
+                className="form-select form-select-sm me-2"
+                value={frequency}
+                onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
+                disabled={LightEnabled}
+              >
+                <option value="daily">Daily</option>
+                <option value="every other day">Every other day</option>
+                <option value="weekly">Weekly</option>
+                <option value="bi-weekly">Bi-Weekly</option>
+
+              </select>
+            </div>
+            {/* Switch */}
+            <div className="form-check form-switch switch">
+              <label className="switch">
+                <input
+                  className="form-check-input que-switch"
+                  type="checkbox"
+                  id="checkNativeSwitch"
+                  checked={LightEnabled}
+                  onChange={e => setLightEnabled(e.target.checked)}
+                />
+                <span className="slider"></span>
+              </label>
+            </div>
           </div>
 
           {/* Fan Tab */}
           <div
-            className={`tab-pane fade${activeTab === 'fan' ? ' show active' : ''}`}
-            id="fan-tab-pane"
-            role="tabpanel"
-            aria-labelledby="fan-tab"
-            tabIndex={0}
+          className={`tab-pane fade${activeTab === 'fan' ? ' show active' : ''}`}
+          id="fan-tab-pane"
+          role="tabpanel"
+          aria-labelledby="fan-tab"
+          tabIndex={0}
           >
-            ...
+          <div className="fan-in wtr-in">
+            <label htmlFor="fan-time" className="form-label">Schedule:</label>
+            <input
+            type="time"
+            id="fan-time"
+            className="form-control form-control-sm me-2"
+            value={time}
+            onChange={e => setTime(e.target.value)}
+            disabled={FanEnabled}
+            />
+          </div>
+          <div className="fan-in wtr-in">
+            <label htmlFor="fan-frequency" className="form-label">Frequency:</label>
+            <select
+            id="fan-frequency"
+            className="form-select form-select-sm me-2"
+            value={frequency}
+           onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
+            disabled={FanEnabled}
+            >
+            <option value="daily">Daily</option>
+            <option value="every other day">Every other day</option>
+            <option value="weekly">Weekly</option>
+            <option value="bi-weekly">Bi-Weekly</option>
+            </select>
+          </div>
+          {/* Switch */}
+          <div className="form-check form-switch switch">
+            <label className="switch">
+            <input
+              className="form-check-input que-switch"
+              type="checkbox"
+              id="fanNativeSwitch"
+              checked={FanEnabled}
+              onChange={e => setFanEnabled(e.target.checked)}
+            />
+            <span className="slider"></span>
+            </label>
+          </div>
           </div>
         </div>
       </div>
