@@ -1,7 +1,7 @@
 import requests
 import time
 
-arduino_ip = "192.168.50.169"
+arduino_ip = "192.168.50.100"
 
 def pump():
     # Turns pump on for specified amount of time, then turns off
