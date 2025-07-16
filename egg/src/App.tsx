@@ -43,7 +43,7 @@ function App() {
         {activePage == 'home' && <Home />}
         {/* Add other pages here when you build them */}
         {activePage == 'home' && <Home />}
-        {/* add other pages here when you build them */}
+        {/* Add other pages here when you build them */}
       </div>
     </div>
   );
