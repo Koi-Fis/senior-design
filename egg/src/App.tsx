@@ -36,6 +36,7 @@ function App() {
       {/* Page container grows to fill the rest */}
       <div className="page-container">
         {activePage === 'care-schedule' && <CareSchedule />}
+        {activePage == 'home' && <Home />}
         {activePage === 'growth-compass' && <GrowthCompass />}
         {activePage == 'home' && <Home />}
         {/* add other pages here when you build them */}
