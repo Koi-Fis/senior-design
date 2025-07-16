@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CareSchedule from './care-schedule/care-schedule';
+import GrowthCompass from './growth-compass/growth-compass';
 import Home from './home-page/home';
 import './App.css';
 
@@ -35,6 +36,7 @@ function App() {
       {/* Page container grows to fill the rest */}
       <div className="page-container">
         {activePage === 'care-schedule' && <CareSchedule />}
+        {activePage === 'growth-compass' && <GrowthCompass />}
         {activePage == 'home' && <Home />}
         {/* add other pages here when you build them */}
       </div>
