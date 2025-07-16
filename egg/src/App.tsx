@@ -36,6 +36,7 @@ function App() {
       <div className="page-container">
         {activePage == 'home' && <Home />}
         {activePage === 'care-schedule' && <CareSchedule />}
+        {activePage == 'home' && <Home />}
         {activePage === 'growth-compass' && <GrowthCompass />}
         
         {/* Add other pages here when you build them */}
