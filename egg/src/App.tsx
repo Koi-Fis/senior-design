@@ -39,6 +39,8 @@ function App() {
         {activePage == 'home' && <Home />}
         {activePage === 'growth-compass' && <GrowthCompass />}
         {/* Add other pages here when you build them */}
+        {activePage == 'home' && <Home />}
+        {/* add other pages here when you build them */}
       </div>
     </div>
   );
