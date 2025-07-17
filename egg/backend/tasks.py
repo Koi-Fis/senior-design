@@ -1,6 +1,7 @@
 import sys
 import interface
 import time
+import sqlite_test
 
 def water_plants(period):
     print("Running water_plants in tasks.py")
@@ -36,6 +37,12 @@ def run_fans(period):
 
     return
 
+def update_database():
+    print("Updating egg_test.db")
+    sqlite_test()
+    
+    return
+
 def main():
     run = sys.argv[1].lower()
     if run=="water_plants":
@@ -49,7 +56,20 @@ def main():
     else:
         print("function not found")
         exit()
-                     
+
+    # match run:
+    #     case "water_plants":
+    #         # python water_plants.py minutes
+    #         water_plants(sys.argv[2])
+    #     case "check_sensors":
+    #         # python check_sensors.py
+    #         check_sensors()
+    #     case "run_fans":
+    #         run_fans(sys.argv[2])
+    #     case _:
+    #         print("function not found")
+    #         exit()
+                        
     return
     
 if __name__ == "__main__":
