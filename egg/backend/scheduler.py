@@ -26,7 +26,6 @@ def main():
     # create_job(cron)
     delete_job(cron)
 
-    print(len(cron), "jobs scheduled.")
     for job in cron:
         print(job)
 
