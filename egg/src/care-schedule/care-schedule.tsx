@@ -130,8 +130,11 @@ function CareSchedule() {
     enabled: fanEnabled,
     time: fanTime,
     frequency: fanFreq,
-    urlOn: ["http://192.168.50.100/fan1/on", "http://192.168.50.100/fan2/on"],
-    urlOff: ["http://192.168.50.100/fan1/off", "http://192.168.50.100/fan2/off"],
+    //urlOn: ["http://192.168.50.100/fan1/on", "http://192.168.50.100/fan2/on"],
+    //urlOff: ["http://192.168.50.100/fan1/off", "http://192.168.50.100/fan2/off"],
+
+    urlOn: "http://127.0.0.1:5173/api/fans_on",
+    urlOff: "http://127.0.0.1:5173/api/fans_off",
   });
 
   return (
