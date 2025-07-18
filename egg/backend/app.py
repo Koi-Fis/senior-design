@@ -13,10 +13,6 @@ CORS(app)
 def hello():
     return "<p>Hello, World!</p>"
 
-@app.route("/")
-def hello():
-    return "<p>Hello, World!</p>"
-
 @app.route("/api/pump", methods=["POST"])
 def start_pump():
     message = pump()
