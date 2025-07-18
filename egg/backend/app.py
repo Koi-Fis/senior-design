@@ -13,6 +13,10 @@ CORS(app)
 def hello():
     return "<p>Hello, World!</p>"
 
+@app.route("/")
+def hello():
+    return "<p>Hello, World!</p>"
+
 @app.route("/api/pump", methods=["POST"])
 def start_pump():
     message = pump()
@@ -22,6 +26,18 @@ def start_pump():
 def data():
     data = get_json()
     return jsonify(data)
+
+@app.route("/api/fans_on", methods=["GET"])
+def fans_on():
+    fan1_on()
+    fan2_on()
+    return "<p>Fans on!</p>"
+
+@app.route("/api/fans_off", methods=["GET"])
+def fans_off():
+    fan1_off()
+    fan2_off()
+    return "<p>Fans off!</p>"
 
 @app.route("/api/fans", methods=["GET"])
 def fans():
