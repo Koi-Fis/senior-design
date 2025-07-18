@@ -1,7 +1,26 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import useDeviceSchedule from "./usePumpSchedule";
+
+type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
+
+const loadFromStorage = <T,>(key: string, fallback: T): T => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) as T : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const saveToStorage = <T,>(key: string, value: T) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Silent fail
+  }
+};
 
 // Reusable component for each device tab
 type DeviceTabProps = {
@@ -9,8 +28,8 @@ type DeviceTabProps = {
   id: string;
   time: string;
   setTime: (t: string) => void;
-  frequency: "daily" | "weekly" | "bi-weekly" | "every other day";
-  setFrequency: (f: any) => void;
+  frequency: Frequency;
+  setFrequency: (f: Frequency) => void;
   enabled: boolean;
   setEnabled: (b: boolean) => void;
   activeTab: string;
@@ -55,7 +74,7 @@ function DeviceTab({
           id={`${id}-frequency`}
           className="form-select form-select-sm me-2"
           value={frequency}
-          onChange={(e) => setFrequency(e.target.value as any)}
+          onChange={(e) => setFrequency(e.target.value as Frequency)}
           disabled={enabled}
         >
           <option value="daily">Daily</option>
@@ -87,27 +106,32 @@ function CareSchedule() {
     { key: "fan", label: "Fan" },
   ];
   const [activeTab, setActiveTab] = useState<string>(TABS[0].key);
-
-  // Watering
-  const [waterTime, setWaterTime] = useState("");
-  const [waterFreq, setWaterFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [waterEnabled, setWaterEnabled] = useState(false);
+   const [waterTime, setWaterTime] = useState<string>(() => loadFromStorage("waterTime", ""));
+  const [waterFreq, setWaterFreq] = useState<Frequency>(() => loadFromStorage("waterFreq", "daily"));
+  const [waterEnabled, setWaterEnabled] = useState<boolean>(() => loadFromStorage("waterEnabled", false));
 
   // Grow Light
-  const [lightTime, setLightTime] = useState("");
-  const [lightFreq, setLightFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [lightEnabled, setLightEnabled] = useState(false);
+  const [lightTime, setLightTime] = useState<string>(() => loadFromStorage("lightTime", ""));
+  const [lightFreq, setLightFreq] = useState<Frequency>(() => loadFromStorage("lightFreq", "daily"));
+  const [lightEnabled, setLightEnabled] = useState<boolean>(() => loadFromStorage("lightEnabled", false));
 
   // Fan
-  const [fanTime, setFanTime] = useState("");
-  const [fanFreq, setFanFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [fanEnabled, setFanEnabled] = useState(false);
+  const [fanTime, setFanTime] = useState<string>(() => loadFromStorage("fanTime", ""));
+  const [fanFreq, setFanFreq] = useState<Frequency>(() => loadFromStorage("fanFreq", "daily"));
+  const [fanEnabled, setFanEnabled] = useState<boolean>(() => loadFromStorage("fanEnabled", false));
+
+  //sync state with localStorage
+  useEffect(() => saveToStorage("waterTime", waterTime), [waterTime]);
+  useEffect(() => saveToStorage("waterFreq", waterFreq), [waterFreq]);
+  useEffect(() => saveToStorage("waterEnabled", waterEnabled), [waterEnabled]);
+
+  useEffect(() => saveToStorage("lightTime", lightTime), [lightTime]);
+  useEffect(() => saveToStorage("lightFreq", lightFreq), [lightFreq]);
+  useEffect(() => saveToStorage("lightEnabled", lightEnabled), [lightEnabled]);
+
+  useEffect(() => saveToStorage("fanTime", fanTime), [fanTime]);
+  useEffect(() => saveToStorage("fanFreq", fanFreq), [fanFreq]);
+  useEffect(() => saveToStorage("fanEnabled", fanEnabled), [fanEnabled]);
 
   // Scheduling hooks
   useDeviceSchedule({
