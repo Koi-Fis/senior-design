@@ -31,13 +31,13 @@ const TemperatureData = () =>{
                 time: new Date(item.timestamp).toLocaleTimeString(),
                 temperature: item.temperature_celcius,
 
-        }));
+            }));
 
             setData(formatted);
             setError(null);
         }   catch (err){
             setError(`Failed to fetch data: ${err instanceof Error ? err.message : 'Unknown error'}`);
-            console.error
+            console.error(err)
         }
 };
     useEffect(()=>{
