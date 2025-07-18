@@ -11,6 +11,9 @@ node_modules
 dist
 dist-ssr
 *.local
+backend/__pycache__
+backend/egg_test.db
+backend/interface_test.py
 
 # Editor directories and files
 .vscode/*
