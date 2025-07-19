@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './growth.css';
-import React,{useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 
 import {
     LineChart,
@@ -14,8 +14,13 @@ import {
 
 const DATA_URL="http://192.168.50.100/data.json";
 
+type TemperatureEntry = {
+    time: string;
+    temperature: number;
+};
+
 const TemperatureData = () =>{
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<TemperatureEntry[]>([]);
     const [error,setError] = useState<string | null>(null);
 
     const fetchData = async () => {
@@ -27,7 +32,7 @@ const TemperatureData = () =>{
             }
             const json = await res.json();
 
-            const formatted = json.map((item: any) => ({
+            const formatted = json.map((item: { timestamp: string; temperature_celcius: number }) => ({
                 time: new Date(item.timestamp).toLocaleTimeString(),
                 temperature: item.temperature_celcius,
 
