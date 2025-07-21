@@ -49,7 +49,7 @@ function Home() {
 // });
 
   return (
-    <div className="landing-page">
+    <div className="home-page">
       <div className="schedule-container">
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
           <h1 className="text-center">&#127804; Home</h1>
