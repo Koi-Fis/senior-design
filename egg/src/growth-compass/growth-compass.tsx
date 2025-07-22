@@ -1,28 +1,43 @@
-import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useEffect, useState } from "react";
+import {
+  RadarChart,
+  Radar,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./growth.css";
-import { useEffect, useState } from "react";
 
+// -----------------------------
+// Types
+// -----------------------------
 type PlantDetailData = {
-  pid: string;
   display_pid: string;
-  alias: string;
-  category: string;
-  max_light_mmol: number;
-  min_light_mmol: number;
-  max_light_lux: number;
-  min_light_lux: number;
-  max_temp: number;
   min_temp: number;
-  max_env_humid: number;
+  max_temp: number;
   min_env_humid: number;
-  max_soil_moist: number;
+  max_env_humid: number;
   min_soil_moist: number;
-  max_soil_ec: number;
-  min_soil_ec: number;
-  image_url: string;
+  max_soil_moist: number;
 };
+
+type SensorData = {
+  temperature_celcius: number;
+  humidity: number;
+  moisture_one: number;
+  moisture_two: number;
+};
+
+// -----------------------------
+// Config
+// -----------------------------
+const PLANTBOOK_TOKEN = "fc6cec3131e4a6873732f919be941bd8736b4836";
+const SENSOR_URL = "http://192.168.50.100/data.json";
 
 const plantOptions = [
   { key: "radish andes f1", label: "Radish" },
@@ -30,154 +45,134 @@ const plantOptions = [
   { key: "spinacia oleracea", label: "Spinach" },
 ];
 
-export default function PlantDetail() {
+// -----------------------------
+// Utility: Normalize Moisture
+// -----------------------------
+function normalizeMoisture(raw: number): number {
+  const dry = 1023; // hypothetical dry value
+  const wet = 300; // hypothetical wet value
+  const clamped = Math.min(Math.max(raw, wet), dry);
+  return Math.round(((dry - clamped) / (dry - wet)) * 100);
+}
+
+// -----------------------------
+// Component
+// -----------------------------
+export default function PlantRadarComparison() {
   const [selectedPlant, setSelectedPlant] = useState<string>("radish andes f1");
-  const [data, setData] = useState<PlantDetailData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [plantData, setPlantData] = useState<PlantDetailData | null>(null);
+  const [sensorData, setSensorData] = useState<SensorData | null>(null);
 
   useEffect(() => {
-    if (!selectedPlant) return;
-    const slug = encodeURIComponent(selectedPlant);
-    fetch(`https://open.plantbook.io/api/v1/plant/detail/${slug}`, {
-      headers: {
-        Authorization: "Token fc6cec3131e4a6873732f919be941bd8736b4836",
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`API error: ${res.status}`);
-        return res.json();
-      })
-      .then(setData)
-      .catch((err) => {
+    const fetchAll = async () => {
+      try {
+        const slug = encodeURIComponent(selectedPlant);
+
+        const [plantRes, sensorRes] = await Promise.all([
+          fetch(`https://open.plantbook.io/api/v1/plant/detail/${slug}`, {
+            headers: {
+              Authorization: `Token ${PLANTBOOK_TOKEN}`,
+            },
+          }),
+          fetch(SENSOR_URL),
+        ]);
+
+        if (!plantRes.ok || !sensorRes.ok)
+          throw new Error("Failed to fetch data");
+
+        const plantJson = await plantRes.json();
+        const sensorJson = await sensorRes.json();
+
+        setPlantData(plantJson);
+
+        const latestSensor = sensorJson[sensorJson.length - 1];
+        setSensorData(latestSensor);
+      } catch (err) {
         console.error(err);
-        setError("Failed to load plant details.");
-        setData(null);
-      });
+      }
+    };
+
+    fetchAll();
   }, [selectedPlant]);
 
-  // Find the display label for the selected plant
-  const selectedLabel =
-    plantOptions.find((opt) => opt.key === selectedPlant)?.label || selectedPlant;
+  const radarData = plantData && sensorData ? [
+    {
+      metric: "Temperature",
+      Sensor: sensorData.temperature_celcius,
+      Ideal: (plantData.min_temp + plantData.max_temp) / 2,
+    },
+    {
+      metric: "Humidity",
+      Sensor: sensorData.humidity,
+      Ideal: (plantData.min_env_humid + plantData.max_env_humid) / 2,
+    },
+    {
+      metric: "Soil Moisture",
+      Sensor: (normalizeMoisture(sensorData.moisture_one) + normalizeMoisture(sensorData.moisture_two)) / 2,
+      Ideal: (plantData.min_soil_moist + plantData.max_soil_moist) / 2,
+    },
+    {
+      metric: "Potassium",
+      Sensor: 5, // Assuming this is potassium for example
+      Ideal: 10,
+    },
+    {
+      metric: "Phosphorus",
+      Sensor: 5, // Assuming this is phosphorus for example
+      Ideal: 10,
+    },
+    {
+      metric: "Nitrogen",
+      Sensor: 5, // Assuming this is nitrogen for example
+      Ideal: 20,
+    },
+  ] : [];
 
-  return (
-    <div className="canvas-container">
-      <div className="radish-info grid grid-cols-2 gap-4 text-sm">
-        <DropdownButton id="dropdown-item-button dropdwn" title={selectedLabel}>
-          {plantOptions.map((opt) => (
-            <Dropdown.Item
-              as="button"
-              key={opt.key}
-              onClick={() => setSelectedPlant(opt.key)}
-            >
-              {opt.label}
-            </Dropdown.Item>
-          ))}
-        </DropdownButton>
-        <h2 className="text-2xl font-bold">{selectedLabel}</h2>
-        {error && <div className="text-red-600">{error}</div>}
-        {!data && !error && <div>Loading plant data...</div>}
-        {data && (
-          <>
-            <div>
-              <strong>Category:</strong> {data.category}
-            </div>
-            <div>
-              <strong>Alias:</strong> {data.alias}
-            </div>
-            <div>
-              <strong>Light (mmol):</strong> {data.min_light_mmol} - {data.max_light_mmol}
-            </div>
-            <div>
-              <strong>Light (lux):</strong> {data.min_light_lux} - {data.max_light_lux}
-            </div>
-            <div>
-              <strong>Temp (°C):</strong> {data.min_temp} - {data.max_temp}
-            </div>
-            <div>
-              <strong>Humidity (%):</strong> {data.min_env_humid} - {data.max_env_humid}
-            </div>
-            <div>
-              <strong>Soil Moisture (%):</strong> {data.min_soil_moist} - {data.max_soil_moist}
-            </div>
-            <div>
-              <strong>Soil EC (μS/cm):</strong> {data.min_soil_ec} - {data.max_soil_ec}
-            </div>
-          </>
-        )}
-      </div>
+   return (
+    <div className="canvas-container py-4">
+      <div className="radish-info">
+      <h2 className="mb-4">Growth Compass – Sensor vs Ideal</h2>
+
+      <DropdownButton
+        id="plant-dropdown"
+        title={plantOptions.find((opt) => opt.key === selectedPlant)?.label || "Select Plant"}
+      >
+        {plantOptions.map((opt) => (
+          <Dropdown.Item
+            as="button"
+            key={opt.key}
+            onClick={() => setSelectedPlant(opt.key)}
+          >
+            {opt.label}
+          </Dropdown.Item>
+        ))}
+      </DropdownButton>
+
+      {radarData.length > 0 && (
+        <ResponsiveContainer width="100%" height={300}>
+          <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="metric" />
+            <PolarRadiusAxis angle={30} domain={[0, 60]} />
+            <Radar name="Sensor" dataKey="Sensor" stroke="#ff4d4d" fill="#ff4d4d" fillOpacity={0.4} />
+            <Radar name="Ideal" dataKey="Ideal" stroke="#4caf50" fill="#4caf50" fillOpacity={0.4} />
+            <Legend />
+          </RadarChart>
+        </ResponsiveContainer>
+      )}
+    </div>
+
+    <div className="radish-info">
+      <h3>Sensor Data</h3>
+      {sensorData && (
+        <ul>
+          <li>Temperature: {sensorData.temperature_celcius} °C</li>
+          <li>Humidity: {sensorData.humidity} %</li>
+          <li>Soil Moisture 1: {sensorData.moisture_one} %</li>
+          <li>Soil Moisture 2: {sensorData.moisture_two} %</li>
+        </ul>
+      )}
+    </div>
     </div>
   );
 }
-
-/*import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-} from "recharts";
-
-const DATA_URL="http://192.168.50.100/data.json";
-
-type TemperatureEntry = {
-    time: string;
-    temperature: number;
-};
-
-const TemperatureData = () =>{
-    const [data, setData] = useState<TemperatureEntry[]>([]);
-    const [error,setError] = useState<string | null>(null);
-
-    const fetchData = async () => {
-        try
-        {
-            const res = await fetch(DATA_URL);
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            const json = await res.json();
-
-            const formatted = json.map((item: { timestamp: string; temperature_celcius: number }) => ({
-                time: new Date(item.timestamp).toLocaleTimeString(),
-                temperature: item.temperature_celcius,
-
-        }));
-
-            setData(formatted);
-            setError(null);
-        }   catch (err){
-            setError(`Failed to fetch data: ${err instanceof Error ? err.message : 'Unknown error'}`);
-            console.error
-        }
-};
-    useEffect(()=>{
-        fetchData();
-        const interval = setInterval(fetchData, 5 * 6 * 1000);
-        return () => clearInterval(interval);
-    }, []);
-
-    return(
-        <div className="canvas-container">
-            <h3>Live Temperature chart</h3>
-            {error && <div className="alert alert-danger">{error}</div>}
-
-            <ResponsiveContainer width="50%" height={300}>
-                <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="time" />
-                    <YAxis domain = {["auto", "auto"]} />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="temperature" stroke="#8884d8" strokeWidth={2} />
-                </LineChart>
-            </ResponsiveContainer>
-
-        </div>
-    );
-};
-
-
-
-
-export default TemperatureData;*/
