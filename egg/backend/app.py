@@ -51,5 +51,15 @@ def fans():
     fan2_off()
     return "<p>Hello, fans!</p>"
 
+@app.route("/api/fans_x")
+def fans_x():
+    duration = request.args.get("time")
+    fan1_on()
+    fan2_on()
+    time.sleep(int(duration))
+    fan1_off()
+    fan2_off()
+    return "<p>Fans on for " + duration + " seconds!</p>"
+
 if __name__ == "__main__":
     app.run(port=5173)
