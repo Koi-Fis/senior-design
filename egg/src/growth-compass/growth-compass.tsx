@@ -7,6 +7,9 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
   Legend,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import GaugeChart from "react-gauge-chart";
 // import Dropdown from "react-bootstrap/Dropdown";
