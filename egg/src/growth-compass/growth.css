@@ -18,7 +18,21 @@
 
 .radish-info {
   width: calc(50% - 2rem);  /* half of row minus gap spacing */
-  min-width: 300px;         /* prevent shrinking too small on narrow screens */
+
+  height: 400px;
+  background-color: white;
+  padding: 1rem;
+
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.GaugeCharts {
+  display: flex;
+  flex-direction: row;
+  width: calc(100% - 2rem);  /* half of row minus gap spacing */
+
   height: 400px;
   background-color: white;
   padding: 1rem;
