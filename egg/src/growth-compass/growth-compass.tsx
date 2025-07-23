@@ -175,7 +175,7 @@ export default function PlantRadarComparison() {
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="metric" />
-                <PolarRadiusAxis angle={30} domain={[0, 60]} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} />
                 <Radar
                   name="Sensor"
                   dataKey="Sensor"
@@ -196,83 +196,107 @@ export default function PlantRadarComparison() {
           )}
         </div>
 
-        <div className="radish-info">
-
-        </div>
+        <div className="radish-info"></div>
 
         <div className="GaugeCharts">
-          <GaugeChart
-            id="gauge-chart3"
-            nrOfLevels={3}
-            colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
-            arcWidth={0.3}
-            percent={
-              sensorData && plantData
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Temperature</div>
+            <GaugeChart
+              id="gauge-chart-temp"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? sensorData.temperature_celcius >
+                    (plantData.min_temp + plantData.max_temp) / 2
+                    ? 0.8
+                    : sensorData.temperature_celcius <
+                      (plantData.min_temp + plantData.max_temp) / 2
+                    ? 0.2
+                    : 0.5
+                  : 0
+              }
+            />
+            <div className="gauge-label">
+              {sensorData && plantData
                 ? sensorData.temperature_celcius >
                   (plantData.min_temp + plantData.max_temp) / 2
-                  ? 0.8
+                  ? `Hot ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
                   : sensorData.temperature_celcius <
                     (plantData.min_temp + plantData.max_temp) / 2
-                  ? 0.2
-                  : 0.5
-                : 0
-            }
-          />
-          <div className="gauge-label">
-            {sensorData && plantData
-              ? sensorData.temperature_celcius >
-                (plantData.min_temp + plantData.max_temp) / 2
-                ? "Hot"
-                : sensorData.temperature_celcius <
-                  (plantData.min_temp + plantData.max_temp) / 2
-                ? "Cold"
-                : "Ideal"
-              : ""}
+                  ? `Cold ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
+                  : `Ideal ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
+                : ""}
+            </div>
           </div>
 
-          <GaugeChart
-            id="gauge-chart2"
-            nrOfLevels={3}
-            colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
-            arcWidth={0.3}
-            percent={
-              sensorData && plantData
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Humidity</div>
+            <GaugeChart
+              id="gauge-chart-humidity"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? sensorData.humidity >
+                    (plantData.min_env_humid + plantData.max_env_humid) / 2
+                    ? 0.8
+                    : sensorData.humidity <
+                      (plantData.min_env_humid + plantData.max_env_humid) / 2
+                    ? 0.2
+                    : 0.5
+                  : 0
+              }
+            />
+            <div className="gauge-label">
+              {sensorData && plantData
                 ? sensorData.humidity >
                   (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? 0.8
+                  ? "High"
                   : sensorData.humidity <
                     (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? 0.2
-                  : 0.5
-                : 0
-            }
-          />
-          <div className="gauge-label">
-            {sensorData && plantData
-              ? sensorData.temperature_celcius >
-                (plantData.min_env_humid + plantData.max_env_humid) / 2
-                ? "Not Ideal"
-                : sensorData.temperature_celcius <
-                  (plantData.min_env_humid + plantData.max_env_humid) / 2
-                ? "Good"
-                : "Ideal"
-              : ""}
+                  ? "Low"
+                  : "Ideal"
+                : ""}
+            </div>
           </div>
-          <GaugeChart
-            id="gauge-chart3"
-            nrOfLevels={3}
-            colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
-            arcWidth={0.3}
-            percent={
-              sensorData && plantData
+
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Soil Moisture</div>
+            <GaugeChart
+              id="gauge-chart-moisture"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? (normalizeMoisture(sensorData.moisture_one) +
+                      normalizeMoisture(sensorData.moisture_two)) /
+                    200
+                  : 0
+              }
+            />
+            <div className="gauge-label">
+              {sensorData && plantData
                 ? (normalizeMoisture(sensorData.moisture_one) +
                     normalizeMoisture(sensorData.moisture_two)) /
-                  200
-                : 0
-            }
-
-          />
-
+                    2 >
+                  (plantData.min_soil_moist + plantData.max_soil_moist) / 2
+                  ? "Wet"
+                  : (normalizeMoisture(sensorData.moisture_one) +
+                      normalizeMoisture(sensorData.moisture_two)) /
+                      2 <
+                    (plantData.min_soil_moist + plantData.max_soil_moist) / 2
+                  ? "Dry"
+                  : "Ideal"
+                : ""}
+            </div>
+          </div>
         </div>
       </div>
     </PlantContext.Provider>
