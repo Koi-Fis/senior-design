@@ -66,7 +66,7 @@ function DeviceTab({
         <input
           type="time"
           id={`${id}-time`}
-          className="form-control form-control-sm me-2"
+          className="form-control form-control-sm me-2 bruh"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           disabled={enabled}
@@ -76,7 +76,7 @@ function DeviceTab({
         <label htmlFor={`${id}-frequency`} className="form-label">Frequency:</label>
         <select
           id={`${id}-frequency`}
-          className="form-select form-select-sm me-2"
+          className="form-select form-select-sm me-2 bruh"
           value={frequency}
           onChange={(e) => setFrequency(e.target.value as Frequency)}
           disabled={enabled}
@@ -215,7 +215,7 @@ function CareSchedule() {
           {TABS.map((tab) => (
             <li className="nav-item" role="presentation" key={tab.key}>
               <button
-                className={`nav-link${activeTab === tab.key ? " active" : ""}`}
+                className={`nav-link${activeTab === tab.key ? " active" : ""} nav-btn`}
                 id={`${tab.key}-tab`}
                 type="button"
                 role="tab"
