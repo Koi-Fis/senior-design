@@ -1,230 +1,90 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './home.css';
-import React, { useState } from 'react';
-// import useDeviceSchedule from './care-schedule/usePumpSchedule';
+import React, { useState, useEffect } from 'react';
+import Card from 'react-bootstrap/Card';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+
+const DATA_URL="http://192.168.50.100/data.json";
+
+const SensorData = () =>{
+  type SensorCard = { title: string; text: string };
+  const [data, setData] = useState<SensorCard[]>([]);
+  const [error,setError] = useState<string | null>(null);
+
+  const fetchData = async () => {
+    try
+    {
+      const res = await fetch(DATA_URL);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const json = await res.json();
+
+      // const formatted = json.map((item: any) => ({
+      //   time: new Date(item.timestamp).toLocaleTimeString(),
+      //   temperature: item.temperature_celcius,
+      //   humidity: item.humidity,
+      //   heat_idx: item.heat_index_celsius,
+      //   moisture1: item.moisture_one,
+      //   moisture2: item.moisture_two,
+      //   N: item.nitrogen,
+      //   P: item.phosphorus,
+      //   K: item.potassium,
+      //}));
+
+      const latestItem = json[json.length-1];
+      const formatted = [
+        {title: "Temperature", text: latestItem.temperature_celcius},
+        {title: "Humidity", text: latestItem.humidity},
+        {title: "Heat Index", text: latestItem.heat_index_celcius},
+        {title: "Moisture1", text: latestItem.moisture_one},
+        {title: "Moisture2", text: latestItem.moisture_two},
+        {title: "Nitrogen", text: latestItem.nitrogen},
+        {title: "Phosphorus", text: latestItem.phosphorus},
+        {title: "Potassium", text: latestItem.potassium},
+      ]
+
+      setData(formatted);
+      setError(null);
+    }   catch (err){
+      setError(`Failed to fetch data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      console.error(err)
+    }
+};
+
+  useEffect(()=>{
+    fetchData();
+    const interval = setInterval(fetchData, 30 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
 
-function Home() {
-  const TABS = [
-    { key: 'water', label: 'Water' },
-    { key: 'grow_light', label: 'Grow Light' },
-    { key: 'fan', label: 'Fan' }
-  ];
-  const [activeTab, setActiveTab] = useState<string>(TABS[0].key);
-
-  // Watering schedule state
-  const [time, setTime] = useState<string>('');
-  const [frequency, setFrequency] = useState<'daily' | 'weekly' | 'bi-weekly' | 'every other day'>('daily');
-  const [waterEnabled, setWaterEnabled] = useState(false);
-  const [LightEnabled, setLightEnabled] = useState(false);
-  const [FanEnabled, setFanEnabled] = useState(false);
-
-
-  // Use the scheduling hook for the water tab
-//   useDeviceSchedule({
-//     enabled: waterEnabled,
-//     time,
-//     frequency,
-//     urlOn: "http://192.168.50.169/water/on",
-//     urlOff: "http://192.168.50.169/water/off"
-//   });
-
-//     // Grow light schedule
-//   useDeviceSchedule({
-//     enabled: LightEnabled,
-//     time,
-//     frequency,
-//     urlOn: "http://192.168.50.169/grow_light/on",
-//     urlOff: "http://192.168.50.169/grow_light/off"
-// });
-
-// // Fan schedule
-// useDeviceSchedule({
-//   enabled: FanEnabled,
-//   time,
-//   frequency,
-//   urlOn: "http://192.168.50.169/fan/on",
-//   urlOff: "http://192.168.50.169/fan/off"
-// });
-
+//TODO: consider adding a placeholder/loading page
   return (
     <div className="home-page">
-      <div className="schedule-container">
-        <header className="d-flex justify-content-center align-items-center p-3 mb-3">
-          <h1 className="text-center">&#127804; Home</h1>
-        </header>
-
-        <ul className="nav nav-tabs" id="myTab" role="tablist">
-          {TABS.map(tab => (
-            <li className="nav-item" role="presentation" key={tab.key}>
-              <button
-                className={`nav-link${activeTab === tab.key ? ' active' : ''}`}
-                id={`${tab.key}-tab`}
-                type="button"
-                role="tab"
-                aria-controls={`${tab.key}-tab-pane`}
-                aria-selected={activeTab === tab.key}
-                onClick={() => setActiveTab(tab.key)}
-              >
-                {tab.label}
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <div className="tab-content" id="myTabContent">
-          {/* Water Tab */}
-          <div
-            className={`tab-pane fade${activeTab === 'water' ? ' show active' : ''}`}
-            id="water-tab-pane"
-            role="tabpanel"
-            aria-labelledby="water-tab"
-            tabIndex={0}
-          >
-            <div className="wtr-in">
-              <label htmlFor="wtr-time" className="form-label">Schedule:</label>
-              <input
-                type="time"
-                id="wtr-time"
-                className="form-control form-control-sm me-2"
-                value={time}
-                onChange={e => setTime(e.target.value)}
-                disabled={waterEnabled}
-              />
-            </div>
-            <div className="wtr-in">
-              <label htmlFor="wtr-frequency" className="form-label">Frequency:</label>
-              <select
-                id="wtr-frequency"
-                className="form-select form-select-sm me-2"
-                value={frequency}
-                onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
-                disabled={waterEnabled}
-              >
-                <option value="daily">Daily</option>
-                <option value="every other day">Every other day</option>
-                <option value="weekly">Weekly</option>
-                <option value="bi-weekly">Bi-Weekly</option>
-              </select>
-            </div>
-            {/* Switch */}
-            <div className="form-check form-switch switch">
-              <label className="switch">
-                <input
-                  className="form-check-input que-switch"
-                  type="checkbox"
-                  id="checkNativeSwitch"
-                  checked={waterEnabled}
-                  onChange={e => setWaterEnabled(e.target.checked)}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          {/* Grow Light Tab */}
-          <div
-            className={`tab-pane fade${activeTab === 'grow_light' ? ' show active' : ''}`}
-            id="grow_light-tab-pane"
-            role="tabpanel"
-            aria-labelledby="grow_light-tab"
-            tabIndex={0}
-          >
-             <div className="grow-light-in wtr-in">
-              <label htmlFor="grow-light-time" className="form-label">Schedule:</label>
-              <input
-                type="time"
-                id="grow-light-time"
-                className="form-control form-control-sm me-2"
-                value={time}
-                onChange={e => setTime(e.target.value)}
-                disabled={LightEnabled}
-              />
-            </div>
-            <div className="grow-light-in wtr-in">
-              <label htmlFor="grow-light-frequency" className="form-label">Frequency:</label>
-              <select
-                id="grow-light-frequency"
-                className="form-select form-select-sm me-2"
-                value={frequency}
-                onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
-                disabled={LightEnabled}
-              >
-                <option value="daily">Daily</option>
-                <option value="every other day">Every other day</option>
-                <option value="weekly">Weekly</option>
-                <option value="bi-weekly">Bi-Weekly</option>
-
-              </select>
-            </div>
-            {/* Switch */}
-            <div className="form-check form-switch switch">
-              <label className="switch">
-                <input
-                  className="form-check-input que-switch"
-                  type="checkbox"
-                  id="checkNativeSwitch"
-                  checked={LightEnabled}
-                  onChange={e => setLightEnabled(e.target.checked)}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-          </div>
-
-          {/* Fan Tab */}
-          <div
-          className={`tab-pane fade${activeTab === 'fan' ? ' show active' : ''}`}
-          id="fan-tab-pane"
-          role="tabpanel"
-          aria-labelledby="fan-tab"
-          tabIndex={0}
-          >
-          <div className="fan-in wtr-in">
-            <label htmlFor="fan-time" className="form-label">Schedule:</label>
-            <input
-            type="time"
-            id="fan-time"
-            className="form-control form-control-sm me-2"
-            value={time}
-            onChange={e => setTime(e.target.value)}
-            disabled={FanEnabled}
-            />
-          </div>
-          <div className="fan-in wtr-in">
-            <label htmlFor="fan-frequency" className="form-label">Frequency:</label>
-            <select
-            id="fan-frequency"
-            className="form-select form-select-sm me-2"
-            value={frequency}
-           onChange={e => setFrequency(e.target.value as 'daily' | 'every other day' | 'weekly' | 'bi-weekly')}
-            disabled={FanEnabled}
-            >
-            <option value="daily">Daily</option>
-            <option value="every other day">Every other day</option>
-            <option value="weekly">Weekly</option>
-            <option value="bi-weekly">Bi-Weekly</option>
-            </select>
-          </div>
-          {/* Switch */}
-          <div className="form-check form-switch switch">
-            <label className="switch">
-            <input
-              className="form-check-input que-switch"
-              type="checkbox"
-              id="fanNativeSwitch"
-              checked={FanEnabled}
-              onChange={e => setFanEnabled(e.target.checked)}
-            />
-            <span className="slider"></span>
-            </label>
-          </div>
-          </div>
-        </div>
+      <div className="stats-container">
+        {error && <div className="alert alert-danger">{error}</div>}
+       <Row xs={1} md={2} className="g-4">
+        {/* {Array.from({ length: 4 }).map((_, idx) => ( */}
+        {data.map((card, idx) => (
+          <Col key={idx}>
+            <Card>
+              
+              <Card.Body>
+                {/* <Card.Title>{card.time}</Card.Title>
+                <Card.Text>{card.temperature}</Card.Text> */}
+                <Card.Title>{card.title}</Card.Title>
+                <Card.Text>{card.text}</Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
       </div>
     </div>
   );
-}
+};
 
-export default Home;
+export default SensorData;

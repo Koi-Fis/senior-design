@@ -5,10 +5,9 @@ import Home from './home-page/home';
 import './App.css';
 
 const pages = [
+  { id: 'home', label: 'Home'},
   { id: 'care-schedule', label: 'Care Schedule' },
   { id: 'growth-compass', label: 'Growth Compass' },
-  { id: 'machines', label: 'Machines' },
-  { id: 'home', label: 'Home'},
 ];
 
 function App() {
@@ -35,9 +34,10 @@ function App() {
 
       {/* Page container grows to fill the rest */}
       <div className="page-container">
+        {activePage == 'home' && <Home />}
         {activePage === 'care-schedule' && <CareSchedule />}
         {activePage === 'growth-compass' && <GrowthCompass />}
-        {activePage == 'home' && <Home />}
+        
         {/* Add other pages here when you build them */}
       </div>
     </div>
