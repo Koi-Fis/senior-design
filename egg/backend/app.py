@@ -4,7 +4,10 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json
+import scheduler
 import time
+import subprocess
+
 
 app = Flask(__name__)
 CORS(app)
@@ -12,6 +15,14 @@ CORS(app)
 @app.route("/")
 def hello():
     return "<p>Hello, World!</p>"
+
+@app.route("/api/cron_water")
+def cron_water():
+    freq = request.args.get("freq")
+    command = f"sudo python scheduler.py {freq}"
+    subprocess.run(command, shell=True)
+    return "<p>Watering frequency set to " + freq + " minutes!</p>"
+
 
 @app.route("/api/pump", methods=["GET"])
 def start_pump():
