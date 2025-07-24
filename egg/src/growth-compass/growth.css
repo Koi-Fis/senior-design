@@ -14,7 +14,7 @@
   gap: 2rem;
   padding: 2rem;
   background:  
-  radial-gradient(ellipse at top, rgba(187, 253, 106,1), transparent),
+  radial-gradient(ellipse at top, rgba(253, 251, 106, 1), transparent),
   radial-gradient(ellipse at bottom, rgba(255, 255, 255,1), transparent);
   overflow-y: auto;
 }

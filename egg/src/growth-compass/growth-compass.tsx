@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext, useContext } from "react";
+import React, { useEffect, useState, createContext} from "react";
 import {
   RadarChart,
   Radar,
@@ -7,9 +7,6 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
   Legend,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import GaugeChart from "react-gauge-chart";
 import Dropdown from "react-bootstrap/Dropdown";

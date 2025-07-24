@@ -10,7 +10,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: end;
+  justify-content: center;
   margin: 0;
   padding: 0;
 }
@@ -26,42 +26,19 @@
   left: 0;
   width: 20vw;
   height: 100vh;
-   background: linear-gradient(
-    200deg,
-    rgba(187, 253, 106,1) 0%,
-    rgb(255, 255, 255) 100%
+  background-image: radial-gradient(
+    farthest-corner at 40px 40px,
+    #fdfb6a 0%,
+    #6ae3a2 100%
   );
-  backdrop-filter: blur(100px);  /* Blurs what's behind the element */
-  border-right: solid 1px black;
-  filter: drop-shadow(0px 4px 5px  rgb(0, 0, 0)); 
+ 
+
+ /* Blurs what's behind the element */
+  border-right: solid 1px rgba(75, 223, 144, 0.99);
+
 
 }
 
-/*.sidebar-button {
-  font-family: 'Pixelify Sans', sans-serif;
-  font-size: clamp(.5rem, 2vw, 1.5rem);
-  width: 26vh;
-  height: 10vh;
-  background-color: rgb(255, 255, 255);
-  border: none;
-  cursor: pointer;
-  margin-bottom: 40px;
-  border-radius: 50px; 
-  filter: drop-shadow(0px 4px 4px  rgba(0, 0, 0, 0.38)); 
-  border: solid 1px rgb(0, 0, 0);
-}
-
-.sidebar-button: last-child {
-  margin-bottom: 0;
-}
-
-.sidebar-button {
-  color: black; 
-}
-
-.sidebar-button:hover {
-  background-color: rgb(220, 220, 220);
-}*/
 
 
 .app-shell {
@@ -93,19 +70,21 @@
 }
 
 .sidebar-button {
-  background: linear-gradient(315deg,rgb(137, 216, 211) 0%, #03c8a8 74%);
+  background:  #fdfb6a;
   line-height: 10vh;
   padding: 0;
-  border: none;
+
   position: relative;
   margin-bottom: 40px;
-  
+  box-shadow: 0 0 0 1px rgba(3, 71, 57, 0.5) inset;
+
 }
 .sidebar-button span {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
+  border-radius: 50px;
 }
 .sidebar-button:before,
 .sidebar-button:after {
@@ -113,13 +92,9 @@
   content: "";
   right: 0;
   bottom: 0;
-  background: rgba(137, 216, 211,1);
-  box-shadow:
-   -7px -7px 20px 0px rgba(255,255,255,.9),
-   -4px -4px 5px 0px rgba(255,255,255,.9),
-   7px 7px 20px 0px rgba(0,0,0,.2),
-   4px 4px 5px 0px rgba(0,0,0,.3);
-  transition: all 0.3s ease;
+  background: #034739;
+  
+  transition: all 0.7s ease;
 }
 .sidebar-button:before{
    height: 0%;
@@ -130,8 +105,8 @@
   height: 2px;
 }
 .sidebar-button:hover{
-  color: rgba(137, 216, 211,1);
-  background: transparent;
+  color: #034739;
+  background:  #fdfb6a;
 }
 .sidebar-button:hover:before {
   height: 100%;
@@ -145,13 +120,9 @@
   content: "";
   left: 0;
   top: 0;
-  background: rgba(137, 216, 211,1);
-  box-shadow:
-   -7px -7px 20px 0px rgba(255,255,255,.9),
-   -4px -4px 5px 0px rgba(255,255,255,.9),
-   7px 7px 20px 0px rgba(0,0,0,.2),
-   4px 4px 5px 0px rgba(0,0,0,.3);
-  transition: all 0.3s ease;
+  background: #034739;
+ 
+  transition: all 0.7s ease;
 }
 .sidebar-button span:before {
   width: 2px;
@@ -170,10 +141,9 @@
 
 
 .sidebar-button.active {
-  background: transparent;
+  background:  #fdfb6a;
   color: rgb(0, 0, 0);
   /*add inner shadow*/
-  box-shadow: inset 0 0 100px rgba(137, 216, 211,1);
   transition: all 0.3s ease;
 }
 

@@ -7,7 +7,7 @@
   width: calc(100vw - 20vw);
   height: 100vh;
   background:  
-  radial-gradient(ellipse at top, rgba(187, 253, 106,1), transparent),
+  radial-gradient(ellipse at top, rgba(253, 251, 106, 1), transparent),
   radial-gradient(ellipse at bottom, rgb(255, 255, 255), transparent);
   justify-content: center;
   align-items: center;
@@ -42,7 +42,7 @@
 .tab-pane {
   display: flex;
   flex-direction: column;
-  color: rgba(187, 253, 106, 1);
+  color:  rgba(253, 251, 106, 1);
   background-color: rgba(3, 71, 57, 1);
   padding: 3rem;
   width: 100%;
@@ -54,7 +54,7 @@
 
 .wtr-in {
   display: grid;
-  margin-top: 1rem;
+  margin-top: 5rem;
   grid-template-columns: 100px 1fr; /* Fixed label width, flexible input */
   gap: 1rem;
   margin-bottom: 3rem;
@@ -107,7 +107,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: rgba(187, 253, 106, 1);
+  background-color: rgba(253, 251, 106, 1);
   color: black;
   text-align: center;
   line-height: 26px;
@@ -119,7 +119,7 @@
 
 input:checked + .slider {
   
-  background-color:#15BE9D;
+  background-color: rgba(253, 251, 106, 1);
 }
 
 input:checked + .slider:before {
@@ -130,18 +130,18 @@ input:checked + .slider:before {
 
 
 .bruh {
-  background-color:rgba(187, 253, 106, 1); /* Light gray background */
-  border-color: rgba(187, 253, 106, 1);
+  background-color: rgba(253, 251, 106, 1); /* Light gray background */
+  border-color: rgba(253, 251, 106, 1);
   border-radius: 8px;
   color:rgba(3, 71, 57, 1); /* Dark gray text */
   transition: all 0.3s ease;
 }
 
 .bruh:focus {
-  background-color: rgba(187, 253, 106, 1); /* White background on focus */
-  border-color: rgba(187, 253, 106, 1);
-  box-shadow: 0 0 0 0.2rem rgba(187, 253, 106, 1); /* Green shadow */
-  
+  background-color: rgba(253, 251, 106, 1); /* White background on focus */
+  border-color: rgba(253, 251, 106, 1);
+  box-shadow: 0 0 0 0.2rem rgba(253, 251, 106, 1); /* Green shadow */
+
 }
 
 .bruh:disabled {
@@ -152,14 +152,14 @@ input:checked + .slider:before {
 }
 
 .nav-btn{
-  background-color: rgba(187, 253, 106, 1) !important;
+  background-color: rgba(253, 251, 106, 1)!important;
   color: rgba(3, 71, 57, 1) !important;
-  border-color: rgba(187, 253, 106, 1) !important;
+  border-color: rgba(253, 251, 106, 1)!important;
 }
 
 .nav-btn.active {
   background-color: rgba(3, 71, 57, 1) !important;
-  color: rgba(187, 253, 106, 1) !important;
+  color: rgba(253, 251, 106, 1) !important;
   border-color: rgba(3, 71, 57, 1) !important;
 }
 
