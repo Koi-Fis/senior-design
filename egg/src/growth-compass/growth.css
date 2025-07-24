@@ -1,3 +1,4 @@
+@import '../App.css';
 .canvas-container {
   position: relative;
   margin-left: 20vw;
@@ -12,7 +13,9 @@
   justify-content: center;
   gap: 2rem;
   padding: 2rem;
-  background-color: white;
+  background:  
+  radial-gradient(ellipse at top, rgba(187, 253, 106,1), transparent),
+  radial-gradient(ellipse at bottom, rgba(255, 255, 255,1), transparent);
   overflow-y: auto;
 }
 

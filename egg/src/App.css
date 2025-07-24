@@ -26,7 +26,12 @@
   left: 0;
   width: 20vw;
   height: 100vh;
-  background-color:rgb(255, 255, 255);
+   background: linear-gradient(
+    200deg,
+    rgba(187, 253, 106,1) 0%,
+    rgb(255, 255, 255) 100%
+  );
+  backdrop-filter: blur(100px);  /* Blurs what's behind the element */
   border-right: solid 1px black;
   filter: drop-shadow(0px 4px 5px  rgb(0, 0, 0)); 
 
