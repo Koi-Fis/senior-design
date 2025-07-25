@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext} from "react";
+import React, { useEffect, useState, createContext } from "react";
 import {
   RadarChart,
   Radar,
@@ -38,7 +38,7 @@ type SensorData = {
 // Config
 // -----------------------------
 const PLANTBOOK_TOKEN = "fc6cec3131e4a6873732f919be941bd8736b4836";
-const SENSOR_URL = "http://192.168.50.100/data.json";
+const SENSOR_URL = "http://192.168.50.137/data.json";
 
 const plantOptions = [
   { key: "radish andes f1", label: "Radish" },
@@ -58,10 +58,10 @@ const PlantContext = createContext<{
 // Utility: Normalize Moisture
 // -----------------------------
 function normalizeMoisture(raw: number): number {
-  const dry = 1023; // hypothetical dry value
-  const wet = 300; // hypothetical wet value
-  const clamped = Math.min(Math.max(raw, wet), dry);
-  return Math.round(((dry - clamped) / (dry - wet)) * 100);
+  const dry = 0; // 0 = dry (0%)
+  const wet = 70; // 70 = wet (100%)
+  const clamped = Math.min(Math.max(raw, dry), wet);
+  return Math.round((clamped / wet) * 100);
 }
 
 // -----------------------------
@@ -220,11 +220,20 @@ export default function PlantRadarComparison() {
               {sensorData && plantData
                 ? sensorData.temperature_celcius >
                   (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Hot ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
+                  ? `Hot ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
                   : sensorData.temperature_celcius <
                     (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Cold ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
-                  : `Ideal ${((sensorData.temperature_celcius * 9/5) + 32).toFixed(1)}°F`
+                  ? `Cold ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
+                  : `Ideal ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
                 : ""}
             </div>
           </div>
@@ -268,29 +277,34 @@ export default function PlantRadarComparison() {
               id="gauge-chart-moisture"
               hideText={true}
               nrOfLevels={3}
-              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
+              colors={["#ff7171ff", "#2caa27ff", "#1c6b75ff"]} // Reversed colors: red=dry, green=ideal, blue=wet
               arcWidth={0.3}
               percent={
                 sensorData && plantData
                   ? (normalizeMoisture(sensorData.moisture_one) +
                       normalizeMoisture(sensorData.moisture_two)) /
-                    200
+                    2 /
+                    100 // Divide by 100 to get 0-1 range
                   : 0
               }
             />
+
             <div className="gauge-label">
               {sensorData && plantData
-                ? (normalizeMoisture(sensorData.moisture_one) +
-                    normalizeMoisture(sensorData.moisture_two)) /
-                    2 >
-                  (plantData.min_soil_moist + plantData.max_soil_moist) / 2
-                  ? "Wet"
-                  : (normalizeMoisture(sensorData.moisture_one) +
-                      normalizeMoisture(sensorData.moisture_two)) /
-                      2 <
-                    (plantData.min_soil_moist + plantData.max_soil_moist) / 2
-                  ? "Dry"
-                  : "Ideal"
+                ? (() => {
+                    const avgMoisture =
+                      (normalizeMoisture(sensorData.moisture_one) +
+                        normalizeMoisture(sensorData.moisture_two)) /
+                      2;
+
+                    // Define moisture ranges
+                    if (avgMoisture <= 24)
+                      return `Dry`;
+                    if (avgMoisture >= 25 && avgMoisture <= 70)
+                      return `Ideal`;
+                    if (avgMoisture > 70)
+                      return `Wet`;
+                  })()
                 : ""}
             </div>
           </div>
