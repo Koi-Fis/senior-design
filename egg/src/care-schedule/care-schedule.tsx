@@ -184,8 +184,8 @@ function CareSchedule() {
     enabled: waterEnabled,
     time: waterTime,
     frequency: waterFreq,
-    urlOn: "http://192.168.50.100/pump/on",
-    urlOff: "http://192.168.50.100/pump/off",
+    urlOn: "http://192.168.50.137/pump/on",
+    urlOff: "http://192.168.50.137/pump/off",
   });
 
   useDeviceSchedule({

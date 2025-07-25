@@ -22,7 +22,7 @@ function App() {
         {pages.map(page => (
           <button
             key={page.id}
-            className={`sidebar-button btn-menu ${activePage === page.id ? 'active' : ''}`}
+            className={`btn btn-moving-gradient btn-moving-gradient--pink  ${activePage === page.id ? 'active' : ''}`}
             onClick={() => setActivePage(page.id)}
           >
             <span>{page.label}</span>

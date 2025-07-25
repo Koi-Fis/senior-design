@@ -54,7 +54,7 @@
 
 .wtr-in {
   display: grid;
-  margin-top: 5rem;
+  margin-top: 3rem;
   grid-template-columns: 100px 1fr; /* Fixed label width, flexible input */
   gap: 1rem;
   margin-bottom: 3rem;
