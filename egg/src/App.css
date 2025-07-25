@@ -18,6 +18,7 @@
 
 .sidebar {
   background-image: url('./assets/EGGfinal3.svg');
+   background-size: 15vw auto;
   background-size: contain;
   background-position: start;
   background-repeat: no-repeat;
