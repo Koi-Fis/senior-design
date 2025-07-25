@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
-import React, { useState } from "react";
+// import React
+import { useState } from "react";
 import useDeviceSchedule from "./usePumpSchedule";
 
 // Reusable component for each device tab
