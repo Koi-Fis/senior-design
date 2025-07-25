@@ -17,6 +17,7 @@
 
 .sidebar {
   background-image: url('./assets/EGGfinal3.svg');
+   background-size: 15vw auto;
   background-size: contain;
   background-position: start;
   background-repeat: no-repeat;
@@ -26,9 +27,8 @@
   left: 0;
   width: 20vw;
   height: 100vh;
-  background-image: linear-gradient(to right top, #144e38, #00A86F);
-  padding: 1rem;
-
+  background-color: rgba(3, 71, 57, 1);
+ 
 
  /* Blurs what's behind the element */
   border-right: solid 3px #1e232c59;
@@ -81,55 +81,50 @@
 
 
 .btn {
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  background-image: linear-gradient(0deg, #3bc74b, #90d3df, #6194d2, #90ea9f);
+} 
+ 
+.btn:hover .btn-slide-show-text1 {
+  margin-left: 65px;
+} 
+ 
+.btn-moving-gradient {
+  height: 55px;
+  width: 200px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
   cursor: pointer;
-  overflow: hidden;
-  border-radius: 0.375rem;
-  border: 1px solid #0a0a0a;
-  background-color: #144E38;
-  padding: 6px 12px;
-  color: #f5f5f5;
-  box-shadow:
-    inset 0 1px #144E38,
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
-  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  margin-bottom: 4rem;
-  width: 26vh;
-  height: 10vh;
+  border: none;
+  background-size: 300% 300%;
   border-radius: 50px;
 } 
  
-.btn:hover {
-  background-color: #E8F3F5;
-  transition: all 0.3s ease;
-  border: none;
-
-}
-
- 
-.btn{
-  content: "";
-  inset: 5;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+.btn-moving-gradient:hover {
+  transition: 0.5s ease-in-out;
+  background-position: 0% 100px;
 } 
  
 
 
 .btn.active {
- background-color: #E8F3F5;
-  box-shadow:
-    inset 0 1px #262626,
-    0 0 #0000;
+  height: 55px;
+  width: 200px;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(255, 255, 255);
+  cursor: pointer;
+  border: none;
+  background-size: 100% 300%;
+  border-radius: 50px;
+  transition: 0.5s ease-in-out;
   
 
 
 }
-
-
-
-
-
-
 
 
 

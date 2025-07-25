@@ -236,6 +236,7 @@ console.log("- error:", error);
                   : 0
               }
             />
+
             <div className="gauge-label">
               {sensorData
                 ? (() => {
