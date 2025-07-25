@@ -38,7 +38,6 @@ function App() {
         {activePage === 'care-schedule' && <CareSchedule />}
         {activePage == 'home' && <Home />}
         {activePage === 'growth-compass' && <GrowthCompass />}
-        {activePage == 'home' && <Home />}
         {/* Add other pages here when you build them */}
       </div>
     </div>

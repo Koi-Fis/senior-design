@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './growth.css';
-import React,{useEffect, useState} from 'react';
+// import React
+import {useEffect, useState} from 'react';
 
 import {
     LineChart,
@@ -12,7 +13,7 @@ import {
     ResponsiveContainer,
 } from "recharts";
 
-const DATA_URL="http://192.168.50.100/data.json";
+const DATA_URL="http://192.168.50.137/data.json";
 
 const TemperatureData = () =>{
     const [data, setData] = useState<any[]>([]);
