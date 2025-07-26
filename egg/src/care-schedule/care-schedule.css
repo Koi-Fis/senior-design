@@ -2,6 +2,7 @@
 
 .landing-page {
   display: flex;
+  flex-direction: column;
   flex: 1;
   margin-left: 20vw;
   width: calc(100vw - 20vw);
@@ -15,6 +16,7 @@
 }
 
 .schedule-container{
+  font-family: 'Pixelify Sans', sans-serif;
   font-family: 'Pixelify Sans', sans-serif;
   display: flex;
   align-items: center;

@@ -267,6 +267,8 @@ function CareSchedule() {
       </div>
     </div>
   );
+  );
 }
 
 export default CareSchedule;
+
