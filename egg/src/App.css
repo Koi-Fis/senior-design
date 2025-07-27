@@ -11,17 +11,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: end;
+  justify-content: center;
   margin: 0;
   padding: 0;
 }
 
 .sidebar {
-  background-image: url('./assets/EGGfinal3.svg');
-   background-size: 15vw auto;
-  background-size: contain;
-  background-position: start;
-  background-repeat: no-repeat;
   position: fixed;
   flex-direction: column;
   top: 0;
