@@ -1,22 +1,37 @@
 @import '../App.css';
+@import '../App.css';
 
 .landing-page {
+  position: relative;
   display: flex;
-  flex-direction: column;
   flex: 1;
   margin-left: 20vw;
   width: calc(100vw - 20vw);
   height: 100vh;
-  background:  
-  radial-gradient(ellipse at top, rgba(253, 251, 106, 1), transparent),
-  radial-gradient(ellipse at bottom, rgb(255, 255, 255), transparent);
   justify-content: center;
   align-items: center;
-  
+  overflow: hidden;
+  z-index: 0; /* default */
+  isolation: isolate;
 }
 
+
+.landing-page::before {
+  content: '';
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; height: 100%;
+  background-image: url('../assets/1.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(10px);
+  z-index: -1; /* makes it sit behind the content */
+}
+  
+
+
 .schedule-container{
-  font-family: 'Pixelify Sans', sans-serif;
   font-family: 'Pixelify Sans', sans-serif;
   display: flex;
   align-items: center;
@@ -25,9 +40,11 @@
   height: 70%;
   margin-left: 20%;
   margin-right: 20vw;
-  color:rgba(3, 71, 57, 1);
   justify-content: center; /* Centers vertically */
   align-items: center; /* Centers horizontally */
+  position: relative;
+  z-index: 1; /* Ensures content is above the background */
+  color:#00A86F;
 }
 
 
@@ -36,20 +53,23 @@
   flex-direction: wrap;
   width: 100%;
   height: 70%;
-  border-width: 1px;
-  border-style: solid;
+  border: 2px solid transparent;
   border-radius: 50px;
+
 }
 
 .tab-pane {
   display: flex;
   flex-direction: column;
-  color:  rgba(253, 251, 106, 1);
-  background-color: rgba(3, 71, 57, 1);
+  color:  #F1FCF6;
+  background-image: linear-gradient(to right top, #00A86F,  #144e38);
   padding: 3rem;
   width: 100%;
   height: 100%;
   border-radius: 50px;
+  border: 1px solid rgba(3, 71, 57, 0.5);
+  z-index: 1; /* Ensures content is above the background */
+  
 }
 
 
@@ -109,7 +129,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: rgba(253, 251, 106, 1);
+  background-color: #00A86F;
   color: black;
   text-align: center;
   line-height: 26px;
@@ -121,7 +141,7 @@
 
 input:checked + .slider {
   
-  background-color: rgba(253, 251, 106, 1);
+  background-color:#cfeef3ff;
 }
 
 input:checked + .slider:before {
@@ -132,37 +152,42 @@ input:checked + .slider:before {
 
 
 .bruh {
-  background-color: rgba(253, 251, 106, 1); /* Light gray background */
-  border-color: rgba(253, 251, 106, 1);
+  background-color: #cfeef3ff; /* Light gray background */
+  border-color: #cfeef3ff;
   border-radius: 8px;
   color:rgba(3, 71, 57, 1); /* Dark gray text */
   transition: all 0.3s ease;
 }
 
 .bruh:focus {
-  background-color: rgba(253, 251, 106, 1); /* White background on focus */
-  border-color: rgba(253, 251, 106, 1);
-  box-shadow: 0 0 0 0.2rem rgba(253, 251, 106, 1); /* Green shadow */
+  background-color: #cfeef3ff; /* White background on focus */
+  border-color: #cfeef3ff;
+  box-shadow: 0 0 0 0.2rem #cfeef3ff; /* Green shadow */
 
 }
 
 .bruh:disabled {
-  background-color: #e9ecef; /* Disabled gray background */
-  border-color: #ced4da; /* Disabled gray border */
+  background-color: #cfeef3ff; /* Disabled gray background */
+  border-color: #cfeef3ff; /* Disabled gray border */
   color: #6c757d; /* Muted text color */
   cursor: not-allowed;
 }
 
 .nav-btn{
-  background-color: rgba(253, 251, 106, 1)!important;
+  background-color: #cfeef3ff!important;
   color: rgba(3, 71, 57, 1) !important;
-  border-color: rgba(253, 251, 106, 1)!important;
+  border-color: #599354!important;
+  z-index: 10; /* Ensures button is above the background */
+ 
 }
 
 .nav-btn.active {
   background-color: rgba(3, 71, 57, 1) !important;
-  color: rgba(253, 251, 106, 1) !important;
-  border-color: rgba(3, 71, 57, 1) !important;
+   color:  #F1FCF6!important;
+  border: 2px solid #599354;
+  z-index: 10; /* Ensures button is above the background */
+  border-bottom:none !important;
+  
 }
 
 
