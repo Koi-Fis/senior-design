@@ -19,10 +19,15 @@ function App() {
     <div className="app-shell">
       {/* Sidebar gets a fixed width */}
       <div className="sidebar">
+        <div className="logo-container">
+          <div className="logo">
+
+          </div>
+        </div>
         {pages.map(page => (
           <button
             key={page.id}
-            className={`btn btn-moving-gradient btn-moving-gradient--pink  ${activePage === page.id ? 'active' : ''}`}
+            className={`btn   ${activePage === page.id ? 'active' : ''}`}
             onClick={() => setActivePage(page.id)}
           >
             <span>{page.label}</span>

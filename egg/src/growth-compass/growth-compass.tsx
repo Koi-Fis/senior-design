@@ -146,6 +146,122 @@ export default function PlantRadarComparison() {
   return (
     <PlantContext.Provider value={{ selectedPlant, setSelectedPlant }}>
       <div className="canvas-container py-4">
+
+        <div className="GaugeCharts">
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Temperature</div>
+            <GaugeChart
+              id="gauge-chart-temp"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#679c81", "#eefdf4","#1d1d35"]}
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? sensorData.temperature_celcius >
+                    (plantData.min_temp + plantData.max_temp) / 2
+                    ? 0.8
+                    : sensorData.temperature_celcius <
+                      (plantData.min_temp + plantData.max_temp) / 2
+                    ? 0.2
+                    : 0.5
+                  : 0
+              }
+            />
+            <div className="gauge-label">
+              {sensorData && plantData
+                ? sensorData.temperature_celcius >
+                  (plantData.min_temp + plantData.max_temp) / 2
+                  ? `Hot ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
+                  : sensorData.temperature_celcius <
+                    (plantData.min_temp + plantData.max_temp) / 2
+                  ? `Cold ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
+                  : `Ideal ${(
+                      (sensorData.temperature_celcius * 9) / 5 +
+                      32
+                    ).toFixed(1)}°F`
+                : ""}
+            </div>
+          </div>
+
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Humidity</div>
+            <GaugeChart
+              id="gauge-chart-humidity"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#679c81", "#eefdf4","#1d1d35"]}
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? sensorData.humidity >
+                    (plantData.min_env_humid + plantData.max_env_humid) / 2
+                    ? 0.8
+                    : sensorData.humidity <
+                      (plantData.min_env_humid + plantData.max_env_humid) / 2
+                    ? 0.2
+                    : 0.5
+                  : 0
+              }
+            />
+            <div className="gauge-label">
+              {sensorData && plantData
+                ? sensorData.humidity >
+                  (plantData.min_env_humid + plantData.max_env_humid) / 2
+                  ? "High"
+                  : sensorData.humidity <
+                    (plantData.min_env_humid + plantData.max_env_humid) / 2
+                  ? "Low"
+                  : "Ideal"
+                : ""}
+            </div>
+          </div>
+
+          <div className="gauge-wrapper">
+            <div className="gauge-title">Soil Moisture</div>
+            <GaugeChart
+              id="gauge-chart-moisture"
+              hideText={true}
+              nrOfLevels={3}
+              colors={["#1d1d35", "#eefdf4", "#679c81"]} // Reversed colors: red=dry, green=ideal, blue=wet
+              arcWidth={0.3}
+              percent={
+                sensorData && plantData
+                  ? (normalizeMoisture(sensorData.moisture_one) +
+                      normalizeMoisture(sensorData.moisture_two)) /
+                    2 /
+                    100 // Divide by 100 to get 0-1 range
+                  : 0
+              }
+            />
+
+            <div className="gauge-label">
+              {sensorData && plantData
+                ? (() => {
+                    const avgMoisture =
+                      (normalizeMoisture(sensorData.moisture_one) +
+                        normalizeMoisture(sensorData.moisture_two)) /
+                      2;
+
+                    // Define moisture ranges
+                    if (avgMoisture <= 24)
+                      return `Dry`;
+                    if (avgMoisture >= 25 && avgMoisture <= 70)
+                      return `Ideal`;
+                    if (avgMoisture > 70)
+                      return `Wet`;
+                  })()
+                : ""}
+            </div>
+          </div>
+        </div>
+
         <div className="radish-info">
           <h2 className="mb-4">Growth Compass – Sensor vs Ideal</h2>
 
@@ -192,123 +308,7 @@ export default function PlantRadarComparison() {
             </ResponsiveContainer>
           )}
         </div>
-
         <div className="radish-info"></div>
-
-        <div className="GaugeCharts">
-          <div className="gauge-wrapper">
-            <div className="gauge-title">Temperature</div>
-            <GaugeChart
-              id="gauge-chart-temp"
-              hideText={true}
-              nrOfLevels={3}
-              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
-              arcWidth={0.3}
-              percent={
-                sensorData && plantData
-                  ? sensorData.temperature_celcius >
-                    (plantData.min_temp + plantData.max_temp) / 2
-                    ? 0.8
-                    : sensorData.temperature_celcius <
-                      (plantData.min_temp + plantData.max_temp) / 2
-                    ? 0.2
-                    : 0.5
-                  : 0
-              }
-            />
-            <div className="gauge-label">
-              {sensorData && plantData
-                ? sensorData.temperature_celcius >
-                  (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Hot ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                  : sensorData.temperature_celcius <
-                    (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Cold ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                  : `Ideal ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                : ""}
-            </div>
-          </div>
-
-          <div className="gauge-wrapper">
-            <div className="gauge-title">Humidity</div>
-            <GaugeChart
-              id="gauge-chart-humidity"
-              hideText={true}
-              nrOfLevels={3}
-              colors={["#1c6b75ff", "#2caa27ff", "#ff7171ff"]}
-              arcWidth={0.3}
-              percent={
-                sensorData && plantData
-                  ? sensorData.humidity >
-                    (plantData.min_env_humid + plantData.max_env_humid) / 2
-                    ? 0.8
-                    : sensorData.humidity <
-                      (plantData.min_env_humid + plantData.max_env_humid) / 2
-                    ? 0.2
-                    : 0.5
-                  : 0
-              }
-            />
-            <div className="gauge-label">
-              {sensorData && plantData
-                ? sensorData.humidity >
-                  (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? "High"
-                  : sensorData.humidity <
-                    (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? "Low"
-                  : "Ideal"
-                : ""}
-            </div>
-          </div>
-
-          <div className="gauge-wrapper">
-            <div className="gauge-title">Soil Moisture</div>
-            <GaugeChart
-              id="gauge-chart-moisture"
-              hideText={true}
-              nrOfLevels={3}
-              colors={["#ff7171ff", "#2caa27ff", "#1c6b75ff"]} // Reversed colors: red=dry, green=ideal, blue=wet
-              arcWidth={0.3}
-              percent={
-                sensorData && plantData
-                  ? (normalizeMoisture(sensorData.moisture_one) +
-                      normalizeMoisture(sensorData.moisture_two)) /
-                    2 /
-                    100 // Divide by 100 to get 0-1 range
-                  : 0
-              }
-            />
-
-            <div className="gauge-label">
-              {sensorData && plantData
-                ? (() => {
-                    const avgMoisture =
-                      (normalizeMoisture(sensorData.moisture_one) +
-                        normalizeMoisture(sensorData.moisture_two)) /
-                      2;
-
-                    // Define moisture ranges
-                    if (avgMoisture <= 24)
-                      return `Dry`;
-                    if (avgMoisture >= 25 && avgMoisture <= 70)
-                      return `Ideal`;
-                    if (avgMoisture > 70)
-                      return `Wet`;
-                  })()
-                : ""}
-            </div>
-          </div>
-        </div>
       </div>
     </PlantContext.Provider>
   );
