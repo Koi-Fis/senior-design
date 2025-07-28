@@ -145,8 +145,8 @@ export default function PlantRadarComparison() {
 
   return (
     <PlantContext.Provider value={{ selectedPlant, setSelectedPlant }}>
-      <div className="canvas-container py-4">
-
+      <div className="canvas-container">
+        {/* Gauge Charts Section */}
         <div className="GaugeCharts">
           <div className="gauge-wrapper">
             <div className="gauge-title">Temperature</div>
@@ -154,39 +154,26 @@ export default function PlantRadarComparison() {
               id="gauge-chart-temp"
               hideText={true}
               nrOfLevels={3}
-              colors={["#679c81", "#eefdf4","#1d1d35"]}
+              colors={["#ff6b6b", "#ffd93d", "#6bcf7f"]}
               arcWidth={0.3}
               percent={
                 sensorData && plantData
-                  ? sensorData.temperature_celcius >
-                    (plantData.min_temp + plantData.max_temp) / 2
-                    ? 0.8
-                    : sensorData.temperature_celcius <
-                      (plantData.min_temp + plantData.max_temp) / 2
-                    ? 0.2
-                    : 0.5
+                  ? Math.min(Math.max(sensorData.temperature_celcius / 40, 0), 1)
                   : 0
               }
             />
             <div className="gauge-label">
               {sensorData && plantData
-                ? sensorData.temperature_celcius >
-                  (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Hot ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                  : sensorData.temperature_celcius <
-                    (plantData.min_temp + plantData.max_temp) / 2
-                  ? `Cold ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                  : `Ideal ${(
-                      (sensorData.temperature_celcius * 9) / 5 +
-                      32
-                    ).toFixed(1)}°F`
-                : ""}
+                ? (() => {
+                    const tempF = (sensorData.temperature_celcius * 9) / 5 + 32;
+                    const idealMin = (plantData.min_temp * 9) / 5 + 32;
+                    const idealMax = (plantData.max_temp * 9) / 5 + 32;
+                    
+                    if (tempF < idealMin) return `Cold ${tempF.toFixed(1)}°F`;
+                    if (tempF > idealMax) return `Hot ${tempF.toFixed(1)}°F`;
+                    return `Ideal ${tempF.toFixed(1)}°F`;
+                  })()
+                : "Loading..."}
             </div>
           </div>
 
@@ -196,30 +183,26 @@ export default function PlantRadarComparison() {
               id="gauge-chart-humidity"
               hideText={true}
               nrOfLevels={3}
-              colors={["#679c81", "#eefdf4","#1d1d35"]}
+              colors={["#ff6b6b", "#ffd93d", "#6bcf7f"]}
               arcWidth={0.3}
               percent={
-                sensorData && plantData
-                  ? sensorData.humidity >
-                    (plantData.min_env_humid + plantData.max_env_humid) / 2
-                    ? 0.8
-                    : sensorData.humidity <
-                      (plantData.min_env_humid + plantData.max_env_humid) / 2
-                    ? 0.2
-                    : 0.5
+                sensorData
+                  ? Math.min(Math.max(sensorData.humidity / 100, 0), 1)
                   : 0
               }
             />
             <div className="gauge-label">
               {sensorData && plantData
-                ? sensorData.humidity >
-                  (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? "High"
-                  : sensorData.humidity <
-                    (plantData.min_env_humid + plantData.max_env_humid) / 2
-                  ? "Low"
-                  : "Ideal"
-                : ""}
+                ? (() => {
+                    const humidity = sensorData.humidity;
+                    const idealMin = plantData.min_env_humid;
+                    const idealMax = plantData.max_env_humid;
+                    
+                    if (humidity < idealMin) return `Low ${humidity.toFixed(1)}%`;
+                    if (humidity > idealMax) return `High ${humidity.toFixed(1)}%`;
+                    return `Ideal ${humidity.toFixed(1)}%`;
+                  })()
+                : "Loading..."}
             </div>
           </div>
 
@@ -229,86 +212,97 @@ export default function PlantRadarComparison() {
               id="gauge-chart-moisture"
               hideText={true}
               nrOfLevels={3}
-              colors={["#1d1d35", "#eefdf4", "#679c81"]} // Reversed colors: red=dry, green=ideal, blue=wet
+              colors={["#ff6b6b", "#ffd93d", "#6bcf7f"]}
               arcWidth={0.3}
               percent={
-                sensorData && plantData
+                sensorData
                   ? (normalizeMoisture(sensorData.moisture_one) +
                       normalizeMoisture(sensorData.moisture_two)) /
-                    2 /
-                    100 // Divide by 100 to get 0-1 range
+                    200 // Divide by 200 to get 0-1 range (since we're averaging two values)
                   : 0
               }
             />
-
             <div className="gauge-label">
-              {sensorData && plantData
+              {sensorData
                 ? (() => {
                     const avgMoisture =
                       (normalizeMoisture(sensorData.moisture_one) +
-                        normalizeMoisture(sensorData.moisture_two)) /
-                      2;
+                        normalizeMoisture(sensorData.moisture_two)) / 2;
 
-                    // Define moisture ranges
-                    if (avgMoisture <= 24)
-                      return `Dry`;
-                    if (avgMoisture >= 25 && avgMoisture <= 70)
-                      return `Ideal`;
-                    if (avgMoisture > 70)
-                      return `Wet`;
+                    if (avgMoisture <= 30) return `Dry ${avgMoisture.toFixed(0)}%`;
+                    if (avgMoisture >= 70) return `Wet ${avgMoisture.toFixed(0)}%`;
+                    return `Ideal ${avgMoisture.toFixed(0)}%`;
                   })()
-                : ""}
+                : "Loading..."}
             </div>
           </div>
         </div>
 
-        <div className="radish-info">
-          <h2 className="mb-4">Growth Compass – Sensor vs Ideal</h2>
+        {/* Content Row */}
+        <div className="content-row">
+          <div className="radish-info">
+            <h2>Growth Compass – Sensor vs Ideal</h2>
 
-          <DropdownButton
-            id="plant-dropdown"
-            title={
-              plantOptions.find((opt) => opt.key === selectedPlant)?.label ||
-              "Select Plant"
-            }
-          >
-            {plantOptions.map((opt) => (
-              <Dropdown.Item
-                as="button"
-                key={opt.key}
-                onClick={() => setSelectedPlant(opt.key)}
-              >
-                {opt.label}
-              </Dropdown.Item>
-            ))}
-          </DropdownButton>
+            <DropdownButton
+              id="plant-dropdown"
+              title={
+                plantOptions.find((opt) => opt.key === selectedPlant)?.label ||
+                "Select Plant"
+              }
+            >
+              {plantOptions.map((opt) => (
+                <Dropdown.Item
+                  as="button"
+                  key={opt.key}
+                  onClick={() => setSelectedPlant(opt.key)}
+                >
+                  {opt.label}
+                </Dropdown.Item>
+              ))}
+            </DropdownButton>
 
-          {radarData.length > 0 && (
-            <ResponsiveContainer width="100%" height={300}>
-              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="metric" />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                <Radar
-                  name="Sensor"
-                  dataKey="Sensor"
-                  stroke="#ff4d4d"
-                  fill="#ff4d4d"
-                  fillOpacity={0.4}
-                />
-                <Radar
-                  name="Ideal"
-                  dataKey="Ideal"
-                  stroke="#4caf50"
-                  fill="#4caf50"
-                  fillOpacity={0.4}
-                />
-                <Legend />
-              </RadarChart>
-            </ResponsiveContainer>
-          )}
+            {radarData.length > 0 && (
+              <ResponsiveContainer width="100%" height={300}>
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                  <PolarGrid gridType="polygon" stroke="rgba(255,255,255,0.3)" />
+                  <PolarAngleAxis 
+                    dataKey="metric" 
+                    tick={{ fill: '#ffffff', fontSize: 12 }}
+                  />
+                  <PolarRadiusAxis 
+                    angle={30} 
+                    domain={[0, 100]} 
+                    tick={{ fill: '#ffffff', fontSize: 10 }}
+                    tickCount={4}
+                  />
+                  <Radar
+                    name="Current"
+                    dataKey="Sensor"
+                    stroke="#ff6b6b"
+                    fill="#ff6b6b"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+                  <Radar
+                    name="Ideal"
+                    dataKey="Ideal"
+                    stroke="#6bcf7f"
+                    fill="#6bcf7f"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+                  <Legend 
+                    wrapperStyle={{ color: '#ffffff' }}
+                  />
+                </RadarChart>
+              </ResponsiveContainer>
+            )}
+          </div>
+
+          <div className="radish-info">
+            {/* You can add additional content here */}
+          </div>
         </div>
-        <div className="radish-info"></div>
       </div>
     </PlantContext.Provider>
   );
