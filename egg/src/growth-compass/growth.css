@@ -1,77 +1,184 @@
 @import '../App.css';
+
 .canvas-container {
   position: relative;
   display: flex;
   margin-left: 20vw;
   width: calc(100vw - 20vw);
-  height: 100vh;
+  min-height: 100vh;
   justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  z-index: 0; /* default */
-  isolation: isolate;
-  flex-direction: row;
-  flex-wrap: wrap;
   align-items: flex-start;
-  gap: 2%;
-  padding: 1rem;
-  
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 0;
+  isolation: isolate;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1rem;
 }
 
-.canvas-container::before{
+.canvas-container::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0; 
-  left: 0;
-  width: 100%; 
-  height: 100%;
+  left: 20vw;
+  width: calc(100vw - 20vw);
+  height: 100vh;
   background-image: url('../assets/1.jpg');
   background-size: cover;
   background-position: center;
   filter: blur(10px);
-  z-index: -1; /* makes it sit behind the content */
-}
-
-.radish-info {
-  width: calc(50% - 2rem);  /* half of row minus gap spacing */
-  height: 400px;
-  background-image: linear-gradient(to right top, #00A86F,  #144e38);
-  padding: 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  z-index: -1;
 }
 
 .GaugeCharts {
-  
   position: relative;
-  background-image: linear-gradient(to right top, #00A86F,  #144e38);
-  top: 7%;
+  background: linear-gradient(135deg, #00A86F 0%, #144e38 100%);
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
   flex-direction: row;
-  width: calc(100% - 2rem);  /* half of row minus gap spacing */
-  height: 400px;
+  flex-wrap: wrap;
+  width: 100%;
+  min-height: 400px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  margin-bottom: 2rem;
+}
+
+.gauge-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem;
+  min-width: 200px;
+}
+
+.gauge-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.gauge-label {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin-top: 0.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  min-width: 120px;
+}
+
+.content-row {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.radish-info {
+  flex: 1;
+  min-width: 300px;
+  min-height: 400px;
+  background: linear-gradient(135deg, #00A86F 0%, #144e38 100%);
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  color: #ffffff;
+}
+
+.radish-info h2 {
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.radish-info:empty {
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radish-info:empty::after {
+  content: 'Additional Content Area';
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+#plant-dropdown {
+  width: auto;
+  min-width: 150px;
+  height: 40px;
+  font-size: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #144e38;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+#plant-dropdown:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .GaugeCharts {
+    flex-direction: column;
+    gap: 1rem;
+  }
   
-
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  .gauge-wrapper {
+    margin: 0.5rem;
+  }
 }
 
-.gauge-label{
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-#plant-dropdown
-{
-  width: 100px;
-  height: 30px;
-  font-size: 14px;
-  background-color: rgb(0, 123, 255);
-
+@media (max-width: 768px) {
+  .canvas-container {
+    margin-left: 0;
+    width: 100vw;
+    padding: 1rem;
+  }
+  
+  .canvas-container::before {
+    left: 0;
+    width: 100vw;
+  }
+  
+  .content-row {
+    flex-direction: column;
+  }
+  
+  .radish-info {
+    min-width: unset;
+  }
+  
+  .GaugeCharts {
+    padding: 1rem;
+  }
+  
+  .gauge-wrapper {
+    min-width: 150px;
+  }
 }

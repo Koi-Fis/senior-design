@@ -1,7 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
 import { useState, useEffect } from "react";
-import useDeviceSchedule from "./usePumpSchedule";
+import useElectronSchedule from "./useElectronSchedule"; // Import the new hook
 
 type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
 
@@ -179,8 +179,9 @@ function CareSchedule() {
     }
   }, [fanTime, fanFreq, fanEnabled]);
 
-  // Scheduling hooks
-  useDeviceSchedule({
+  // Use the new Electron-based scheduling hooks instead of the old ones
+  useElectronSchedule({
+    id: "water",
     enabled: waterEnabled,
     time: waterTime,
     frequency: waterFreq,
@@ -188,7 +189,8 @@ function CareSchedule() {
     urlOff: "http://192.168.50.137/pump/off",
   });
 
-  useDeviceSchedule({
+  useElectronSchedule({
+    id: "grow_light",
     enabled: lightEnabled,
     time: lightTime,
     frequency: lightFreq,
@@ -196,19 +198,20 @@ function CareSchedule() {
     urlOff: "http://192.168.50.100/grow_light/off",
   });
 
-  useDeviceSchedule({
+  useElectronSchedule({
+    id: "fan",
     enabled: fanEnabled,
     time: fanTime,
     frequency: fanFreq,
-    urlOn: "http://127.0.0.1:5173/api/fans_on",
-    urlOff: "http://127.0.0.1:5173/api/fans_off",
+    urlOn: "http://192.168.50.137/fan1/on",
+    urlOff: "http://192.168.50.137/fan1/off",
   });
 
   return (
     <div className="landing-page">
       <div className="schedule-container">
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
-          <h1 className="text-center">&#127804; Care Schedule</h1>
+          <h1 className="text-center care-title ">&#127804; Care Schedule</h1>
         </header>
 
         <ul className="nav nav-tabs" role="tablist">
@@ -271,4 +274,3 @@ function CareSchedule() {
 }
 
 export default CareSchedule;
-

@@ -1,22 +1,9 @@
 "use strict";
 const electron = require("electron");
-electron.contextBridge.exposeInMainWorld("ipcRenderer", {
-  on(...args) {
-    const [channel, listener] = args;
-    return electron.ipcRenderer.on(channel, (event, ...args2) => listener(event, ...args2));
-  },
-  off(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.off(channel, ...omit);
-  },
-  send(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.send(channel, ...omit);
-  },
-  invoke(...args) {
-    const [channel, ...omit] = args;
-    return electron.ipcRenderer.invoke(channel, ...omit);
-  }
-  // You can expose other APTs you need here.
-  // ...
+electron.contextBridge.exposeInMainWorld("electronAPI", {
+  // ... your existing APIs
+  // Schedule management
+  createSchedule: (scheduleData) => electron.ipcRenderer.invoke("create-schedule", scheduleData),
+  clearSchedule: (id) => electron.ipcRenderer.invoke("clear-schedule", id),
+  getActiveSchedules: () => electron.ipcRenderer.invoke("get-active-schedules")
 });

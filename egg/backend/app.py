@@ -42,18 +42,6 @@ def data():
     data = get_json()
     return jsonify(data)
 
-@app.route("/api/fans_on", methods=["GET"])
-def fans_on():
-    fan1_on()
-    fan2_on()
-    return "<p>Fans on!</p>"
-
-@app.route("/api/fans_off", methods=["GET"])
-def fans_off():
-    fan1_off()
-    fan2_off()
-    return "<p>Fans off!</p>"
-
 @app.route("/api/fans", methods=["GET"])
 def fans():
     fan1_on()
@@ -62,16 +50,6 @@ def fans():
     fan1_off()
     fan2_off()
     return "<p>Hello, fans!</p>"
-
-@app.route("/api/fans_x")
-def fans_x():
-    duration = request.args.get(time)
-    fan1_on()
-    fan2_on()
-    time.sleep(time)
-    fan1_off()
-    fan2_off()
-    return "<p>Fans on for " + duration + "seconds!</p>"
 
 if __name__ == "__main__":
     app.run(port=5173)

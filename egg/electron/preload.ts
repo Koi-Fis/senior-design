@@ -1,24 +1,40 @@
-import { ipcRenderer, contextBridge } from 'electron'
+// Add this to your electron/preload.ts
 
-// --------- Expose some API to the Renderer process ---------
-contextBridge.exposeInMainWorld('ipcRenderer', {
-  on(...args: Parameters<typeof ipcRenderer.on>) {
-    const [channel, listener] = args
-    return ipcRenderer.on(channel, (event, ...args) => listener(event, ...args))
-  },
-  off(...args: Parameters<typeof ipcRenderer.off>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.off(channel, ...omit)
-  },
-  send(...args: Parameters<typeof ipcRenderer.send>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.send(channel, ...omit)
-  },
-  invoke(...args: Parameters<typeof ipcRenderer.invoke>) {
-    const [channel, ...omit] = args
-    return ipcRenderer.invoke(channel, ...omit)
-  },
+import { contextBridge, ipcRenderer } from 'electron';
 
-  // You can expose other APTs you need here.
-  // ...
-})
+type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
+
+interface ScheduleData {
+  id: string;
+  enabled: boolean;
+  time: string;
+  frequency: Frequency;
+  urlOn: string | string[];
+  urlOff: string | string[];
+}
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  // ... your existing APIs
+  
+  // Schedule management
+  createSchedule: (scheduleData: ScheduleData) => 
+    ipcRenderer.invoke('create-schedule', scheduleData),
+  
+  clearSchedule: (id: string) => 
+    ipcRenderer.invoke('clear-schedule', id),
+  
+  getActiveSchedules: () => 
+    ipcRenderer.invoke('get-active-schedules'),
+});
+
+// Update your type declarations
+declare global {
+  interface Window {
+    electronAPI: {
+      // ... your existing APIs
+      createSchedule: (scheduleData: ScheduleData) => Promise<{ success: boolean; message: string }>;
+      clearSchedule: (id: string) => Promise<{ success: boolean; message: string }>;
+      getActiveSchedules: () => Promise<string[]>;
+    }
+  }
+}
