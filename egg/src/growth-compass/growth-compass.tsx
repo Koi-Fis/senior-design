@@ -222,7 +222,6 @@ export default function PlantRadarComparison() {
                   : 0
               }
             />
-
             <div className="gauge-label">
               {sensorData
                 ? (() => {
