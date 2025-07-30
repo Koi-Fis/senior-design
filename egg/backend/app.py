@@ -3,11 +3,12 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json, arduino_ip
+from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json, get_ip
 import scheduler
 import time
 import subprocess
 import sqlite3
+import urllib
 
 app = Flask(__name__)
 CORS(app)
@@ -28,10 +29,10 @@ def sensor():
     
 @app.route("/api/sensor2")
 def sensor2():
-    with open('http://{arduino_ip}/data.json', 'r') as f:
-        entries = f.readlines()
+    with urllib.request.urlopen("http://192.168.50.137/data.json") as url:
+        entries = url.readlines()
         if entries:
-            return "<p>" + entries[-1].strip() + "</p>"
+            return "<p>" + entries[-1].decode()[:-3] + "</p>"
         else:
             return
 
