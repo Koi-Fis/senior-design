@@ -3,7 +3,7 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json
+from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json, arduino_ip
 import scheduler
 import time
 import subprocess
@@ -25,6 +25,15 @@ def sensor():
         cursor.execute(sql, val)
         entry = cursor.fetchone()
         return "<p>" + str(entry) + "</p>"
+    
+@app.route("/api/sensor2")
+def sensor2():
+    with open('http://{arduino_ip}/data.json', 'r') as f:
+        entries = f.readlines()
+        if entries:
+            return "<p>" + entries[-1].strip() + "</p>"
+        else:
+            return
 
 @app.route("/api/cron_water")
 def cron_water():
