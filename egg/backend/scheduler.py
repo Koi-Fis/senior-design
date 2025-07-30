@@ -30,6 +30,10 @@ def cron_schedule(cron, am_pm_time, days):
         cron.write()
 
     '''
+    # if week%2
+    #     water
+    #     week=0
+    # week++
     elif(days == "bi-weekly"):
         str = min + " " + hour + " 1,15 * *"
         job.setall(str)
