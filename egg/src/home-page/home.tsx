@@ -10,9 +10,8 @@ import Row from 'react-bootstrap/Row';
 
 const DATA_URL="http://192.168.50.137/data.json";
 
-const SensorData = () =>{
-  type SensorCard = { title: string; text: string };
-  const [data, setData] = useState<SensorCard[]>([]);
+const sensorData = () =>{
+  const [data, setData] = useState<any[]>([]);
   const [error,setError] = useState<string | null>(null);
   const lastRef = useRef<string>('');
 
@@ -126,5 +125,30 @@ const SensorData = () =>{
     </div>
   );
 };
+
+//   return (
+//     <div className="home-page">
+//       <div className="stats-container">
+//         {error && <div className="alert alert-danger">{error}</div>}
+//        <Row xs={1} md={2} className="g-4">
+//         {/* {Array.from({ length: 4 }).map((_, idx) => ( */}
+//         {data.map((card, idx) => (
+//           <Col key={idx}>
+//             <Card>
+              
+//               <Card.Body>
+//                 {/* <Card.Title>{card.time}</Card.Title>
+//                 <Card.Text>{card.temperature}</Card.Text> */}
+//                 <Card.Title>{card.title}</Card.Title>
+//                 <Card.Text>{card.text}</Card.Text>
+//               </Card.Body>
+//             </Card>
+//           </Col>
+//         ))}
+//       </Row>
+//       </div>
+//     </div>
+//   );
+// };
 
 export default sensorData;
