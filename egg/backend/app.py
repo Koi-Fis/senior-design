@@ -3,12 +3,11 @@
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json
+from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_off, get_json, arduino_ip
 import scheduler
 import time
 import subprocess
 import sqlite3
-
 
 app = Flask(__name__)
 CORS(app)
@@ -16,6 +15,25 @@ CORS(app)
 @app.route("/")
 def hello():
     return "<p>Hello, World!</p>"
+
+@app.route("/api/latest_sensor")
+def sensor():
+    with sqlite3.connect('egg_test.db') as conn:    
+        cursor = conn.cursor()
+        val = (1,)
+        sql = "SELECT * FROM(SELECT * FROM eggbase ORDER BY timestamp DESC) AS sub ORDER BY timestamp DESC LIMIT ?;"
+        cursor.execute(sql, val)
+        entry = cursor.fetchone()
+        return "<p>" + str(entry) + "</p>"
+    
+@app.route("/api/sensor2")
+def sensor2():
+    with open('http://{arduino_ip}/data.json', 'r') as f:
+        entries = f.readlines()
+        if entries:
+            return "<p>" + entries[-1].strip() + "</p>"
+        else:
+            return
 
 @app.route("/api/cron_water")
 def cron_water():
@@ -52,15 +70,15 @@ def fans():
     fan2_off()
     return "<p>Hello, fans!</p>"
 
-@app.route("/api/latest_sensor")
-def sensor():
-    with sqlite3.connect('egg_test.db') as conn:
-        cursor = conn.cursor()
-        val = (1,)
-        sql = "SELECT * FROM(SELECT * FROM eggbase ORDER BY timestamp DESC) AS sub ORDER BY timestamp DESC LIMIT ?;"
-        cursor.execute(sql, val)
-        entry = cursor.fetchone()
-        return "<p>" + str(entry) + "</p>"
+@app.route("/api/fans_x")
+def fans_x():
+    duration = request.args.get("time")
+    fan1_on()
+    fan2_on()
+    time.sleep(int(duration))
+    fan1_off()
+    fan2_off()
+    return "<p>Fans on for " + duration + " seconds!</p>"
 
 if __name__ == "__main__":
     app.run(port=5173)
