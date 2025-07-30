@@ -7,6 +7,7 @@ from interface import pump, pump_on, pump_off, fan1_on, fan2_on, fan1_off, fan2_
 import scheduler
 import time
 import subprocess
+import sqlite3
 
 
 app = Flask(__name__)
@@ -50,6 +51,16 @@ def fans():
     fan1_off()
     fan2_off()
     return "<p>Hello, fans!</p>"
+
+@app.route("/api/latest_sensor")
+def sensor():
+    with sqlite3.connect('egg_test.db') as conn:
+        cursor = conn.cursor()
+        val = (1,)
+        sql = "SELECT * FROM(SELECT * FROM eggbase ORDER BY timestamp DESC) AS sub ORDER BY timestamp DESC LIMIT ?;"
+        cursor.execute(sql, val)
+        entry = cursor.fetchone()
+        return "<p>" + str(entry) + "</p>"
 
 if __name__ == "__main__":
     app.run(port=5173)
