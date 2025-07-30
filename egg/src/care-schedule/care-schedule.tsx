@@ -1,7 +1,42 @@
+<<<<<<< HEAD
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import useDeviceSchedule from "./usePumpSchedule";
+=======
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import './care-schedule.css';
+import React, { useState } from 'react';
+import usePumpSchedule from './usePumpSchedule';
+>>>>>>> d17bf9c (changes to turn on and turn off logic)
+
+type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
+
+const loadFromStorage = <T,>(key: string, fallback: T): T => {
+  try {
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) as T : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const saveToStorage = <T,>(key: string, value: T) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Handle error
+  }
+};
+
+const removeFromStorage = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Handle error
+  }
+};
 
 // Reusable component for each device tab
 type DeviceTabProps = {
@@ -9,8 +44,8 @@ type DeviceTabProps = {
   id: string;
   time: string;
   setTime: (t: string) => void;
-  frequency: "daily" | "weekly" | "bi-weekly" | "every other day";
-  setFrequency: (f: any) => void;
+  frequency: Frequency;
+  setFrequency: (f: Frequency) => void;
   enabled: boolean;
   setEnabled: (b: boolean) => void;
   activeTab: string;
@@ -35,27 +70,23 @@ function DeviceTab({
       tabIndex={0}
     >
       <div className="wtr-in">
-        <label htmlFor={`${id}-time`} className="form-label">
-          Schedule:
-        </label>
+        <label htmlFor={`${id}-time`} className="form-label">Schedule:</label>
         <input
           type="time"
           id={`${id}-time`}
-          className="form-control form-control-sm me-2"
+          className="form-control form-control-sm me-2 bruh"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           disabled={enabled}
         />
       </div>
       <div className="wtr-in">
-        <label htmlFor={`${id}-frequency`} className="form-label">
-          Frequency:
-        </label>
+        <label htmlFor={`${id}-frequency`} className="form-label">Frequency:</label>
         <select
           id={`${id}-frequency`}
-          className="form-select form-select-sm me-2"
+          className="form-select form-select-sm me-2 bruh"
           value={frequency}
-          onChange={(e) => setFrequency(e.target.value as any)}
+          onChange={(e) => setFrequency(e.target.value as Frequency)}
           disabled={enabled}
         >
           <option value="daily">Daily</option>
@@ -88,37 +119,87 @@ function CareSchedule() {
   ];
   const [activeTab, setActiveTab] = useState<string>(TABS[0].key);
 
-  // Watering
-  const [waterTime, setWaterTime] = useState("");
-  const [waterFreq, setWaterFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [waterEnabled, setWaterEnabled] = useState(false);
+  // Load enabled-only state
+  const enabledWater = loadFromStorage<boolean>("waterEnabled", false);
+  const enabledLight = loadFromStorage<boolean>("lightEnabled", false);
+  const enabledFan = loadFromStorage<boolean>("fanEnabled", false);
 
-  // Grow Light
-  const [lightTime, setLightTime] = useState("");
-  const [lightFreq, setLightFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [lightEnabled, setLightEnabled] = useState(false);
+<<<<<<< HEAD
+  const [waterTime, setWaterTime] = useState<string>(() =>
+    enabledWater ? loadFromStorage("waterTime", "") : ""
+  );
+  const [waterFreq, setWaterFreq] = useState<Frequency>(() =>
+    enabledWater ? loadFromStorage("waterFreq", "daily") : "daily"
+  );
+  const [waterEnabled, setWaterEnabled] = useState<boolean>(enabledWater);
 
-  // Fan
-  const [fanTime, setFanTime] = useState("");
-  const [fanFreq, setFanFreq] = useState<
-    "daily" | "weekly" | "bi-weekly" | "every other day"
-  >("daily");
-  const [fanEnabled, setFanEnabled] = useState(false);
+  const [lightTime, setLightTime] = useState<string>(() =>
+    enabledLight ? loadFromStorage("lightTime", "") : ""
+  );
+  const [lightFreq, setLightFreq] = useState<Frequency>(() =>
+    enabledLight ? loadFromStorage("lightFreq", "daily") : "daily"
+  );
+  const [lightEnabled, setLightEnabled] = useState<boolean>(enabledLight);
 
-  // Scheduling hooks
-  useDeviceSchedule({
+  const [fanTime, setFanTime] = useState<string>(() =>
+    enabledFan ? loadFromStorage("fanTime", "") : ""
+  );
+  const [fanFreq, setFanFreq] = useState<Frequency>(() =>
+    enabledFan ? loadFromStorage("fanFreq", "daily") : "daily"
+  );
+  const [fanEnabled, setFanEnabled] = useState<boolean>(enabledFan);
+
+  // Save/remove state for Water
+  useEffect(() => {
+    if (waterEnabled) {
+      saveToStorage("waterTime", waterTime);
+      saveToStorage("waterFreq", waterFreq);
+      saveToStorage("waterEnabled", true);
+    } else {
+      removeFromStorage("waterTime");
+      removeFromStorage("waterFreq");
+      removeFromStorage("waterEnabled");
+    }
+  }, [waterTime, waterFreq, waterEnabled]);
+
+  // Save/remove state for Grow Light
+  useEffect(() => {
+    if (lightEnabled) {
+      saveToStorage("lightTime", lightTime);
+      saveToStorage("lightFreq", lightFreq);
+      saveToStorage("lightEnabled", true);
+    } else {
+      removeFromStorage("lightTime");
+      removeFromStorage("lightFreq");
+      removeFromStorage("lightEnabled");
+    }
+  }, [lightTime, lightFreq, lightEnabled]);
+
+  // Save/remove state for Fan
+  useEffect(() => {
+    if (fanEnabled) {
+      saveToStorage("fanTime", fanTime);
+      saveToStorage("fanFreq", fanFreq);
+      saveToStorage("fanEnabled", true);
+    } else {
+      removeFromStorage("fanTime");
+      removeFromStorage("fanFreq");
+      removeFromStorage("fanEnabled");
+    }
+  }, [fanTime, fanFreq, fanEnabled]);
+
+  // Use the new Electron-based scheduling hooks instead of the old ones
+  useElectronSchedule({
+    id: "water",
     enabled: waterEnabled,
     time: waterTime,
     frequency: waterFreq,
-    urlOn: "http://192.168.50.100/pump/on",
-    urlOff: "http://192.168.50.100/pump/off",
+    urlOn: "http://192.168.50.137/pump/on",
+    urlOff: "http://192.168.50.137/pump/off",
   });
 
-  useDeviceSchedule({
+  useElectronSchedule({
+    id: "grow_light",
     enabled: lightEnabled,
     time: lightTime,
     frequency: lightFreq,
@@ -126,29 +207,36 @@ function CareSchedule() {
     urlOff: "http://192.168.50.100/grow_light/off",
   });
 
-  useDeviceSchedule({
+  useElectronSchedule({
+    id: "fan",
     enabled: fanEnabled,
     time: fanTime,
     frequency: fanFreq,
-    //urlOn: ["http://192.168.50.100/fan1/on", "http://192.168.50.100/fan2/on"],
-    //urlOff: ["http://192.168.50.100/fan1/off", "http://192.168.50.100/fan2/off"],
-
     urlOn: "http://127.0.0.1:5173/api/fans_on",
     urlOff: "http://127.0.0.1:5173/api/fans_off",
+=======
+  // Use the scheduling hook for the water tab
+  useDeviceSchedule({
+    enabled: waterEnabled,
+    time,
+    frequency,
+    urlOn: "http://192.168.50.169/fan1/on",
+    urlOff: "http://192.168.50.169/fan1/off"
+>>>>>>> d17bf9c (changes to turn on and turn off logic)
   });
 
   return (
     <div className="landing-page">
       <div className="schedule-container">
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
-          <h1 className="text-center">&#127804; Care Schedule</h1>
+          <h1 className="text-center care-title ">&#127804; Care Schedule</h1>
         </header>
 
         <ul className="nav nav-tabs" role="tablist">
           {TABS.map((tab) => (
             <li className="nav-item" role="presentation" key={tab.key}>
               <button
-                className={`nav-link${activeTab === tab.key ? " active" : ""}`}
+                className={`nav-link${activeTab === tab.key ? " active" : ""} nav-btn`}
                 id={`${tab.key}-tab`}
                 type="button"
                 role="tab"

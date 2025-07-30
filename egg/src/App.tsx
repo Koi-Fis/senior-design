@@ -5,14 +5,13 @@ import Home from './home-page/home';
 import './App.css';
 
 const pages = [
+  { id: 'home', label: 'Home'},
   { id: 'care-schedule', label: 'Care Schedule' },
   { id: 'growth-compass', label: 'Growth Compass' },
-  { id: 'machines', label: 'Machines' },
-  { id: 'home', label: 'Home'},
 ];
 
 function App() {
-  const [activePage, setActivePage] = useState<string>('home');
+  const [activePage, setActivePage] = useState<string>('care-schedule');
 
 
 
@@ -20,10 +19,15 @@ function App() {
     <div className="app-shell">
       {/* Sidebar gets a fixed width */}
       <div className="sidebar">
+        <div className="logo-container">
+          <div className="logo">
+
+          </div>
+        </div>
         {pages.map(page => (
           <button
             key={page.id}
-            className={`sidebar-button btn-menu ${activePage === page.id ? 'active' : ''}`}
+            className={`btn   ${activePage === page.id ? 'active' : ''}`}
             onClick={() => setActivePage(page.id)}
           >
             <span>{page.label}</span>
@@ -35,10 +39,11 @@ function App() {
 
       {/* Page container grows to fill the rest */}
       <div className="page-container">
-        {activePage === 'care-schedule' && <CareSchedule />}
-        {activePage === 'growth-compass' && <GrowthCompass />}
         {activePage == 'home' && <Home />}
-        {/* Add other pages here when you build them */}
+        {activePage === 'care-schedule' && <CareSchedule />}
+        {activePage == 'home' && <Home />}
+        {activePage === 'growth-compass' && <GrowthCompass />}
+        {/* add other pages here when you build them */}
       </div>
     </div>
   );

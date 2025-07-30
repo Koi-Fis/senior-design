@@ -1,80 +1,108 @@
 @import '../App.css';
 
+
 .landing-page {
+  position: relative;
   display: flex;
   flex: 1;
+  margin-left: 20vw;
+  width: calc(100vw - 20vw);
   height: 100vh;
-  width: 100vw;
-  background-color: rgb(255, 255, 255);
   justify-content: center;
   align-items: center;
-  
+  overflow: hidden;
+  z-index: 0; /* default */
+  isolation: isolate;
 }
+
+
+.landing-page::before {
+  content: '';
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%; height: 100%;
+  background-image: url('../assets/1.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(10px);
+  z-index: -1; /* makes it sit behind the content */
+}
+  
+
 
 .schedule-container{
   font-family: 'Pixelify Sans', sans-serif;
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 60%;
+  width: 90%;
   height: 70%;
   margin-left: 20%;
+  margin-right: 20vw;
+  justify-content: center; /* Centers vertically */
+  align-items: center; /* Centers horizontally */
+  position: relative;
+  z-index: 1; /* Ensures content is above the background */
+  color:#00A86F;
   
-  
+ 
 }
 
-.nav-tabs {
-  background-color: transparent;
-  border-color: rgba(0, 0, 0, 0.0);
-  border-width: 1px;
-  border-style: solid;
-  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.1));
-  border-radius: 10px;
-}
+ 
 
-.tab-content {
-  display: flex;
+  .tab-content {
+    display: flex;
   flex-direction: wrap;
-  width: 80%;
+  width: 100%;
   height: 70%;
-  background-color: rgb(255, 255, 255);
-  border-color: rgba(0, 0, 0, 0.07);
-  border-width: 1px;
-  border-style: solid;
-  filter: drop-shadow(0px 0px 10px rgba(0, 0, 0, 0.1));
-  border-radius: 10px;
+  border: 2px solid transparent;
+  border-radius: 50px;
+
 }
-
-
 
 .tab-pane {
   display: flex;
   flex-direction: column;
-  color: rgb(0, 0, 0);
-  background-color: rgb(255, 255, 255);
+  color:  #F1FCF6;
+  background-image: linear-gradient(to right top, #00A86F,  #144e38);
   padding: 3rem;
   width: 100%;
   height: 100%;
+  border-radius: 50px;
+  border: 1px solid rgba(3, 71, 57, 0.5);
+  z-index: 1; /* Ensures content is above the background */
+  
 }
 
 
 
 .wtr-in {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: grid;
   margin-top: 3rem;
-  margin-bottom: 3rem;
+  grid-template-columns: 100px 1fr; /* Fixed label width, flexible input */
   gap: 1rem;
-  text-align: center;
+  margin-bottom: 3rem;
+  position: relative;
+  
+}
+
+.wtr-in label {
+  text-align: right; /* Right-align labels for better visual connection */
+  padding-right: 0.5rem;
+}
+
+.wtr-in input,
+.wtr-in select {
+  width: 100%;
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
+  width: 90px;
   height: 34px;
+  margin-right: 70px;
   
 }
 
@@ -84,10 +112,11 @@
   height: 0;
 }
 
+
 .slider {
   position: absolute;
   cursor: pointer;
-  background-color: #ccc;
+  background-color: #01251C;
   transition: 0.4s;
   border-radius: 34px;
   top: 0;
@@ -103,7 +132,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: white;
+  background-color: #00A86F;
   color: black;
   text-align: center;
   line-height: 26px;
@@ -111,16 +140,62 @@
   transition: 0.4s;
 }
 
+
+
 input:checked + .slider {
   
-  background-color:rgb(86, 153, 103);
+  background-color:#cfeef3ff;
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
+  transform: translateX(50px);
   content: "";
   color: black;
 }
 
 
+.bruh {
+  background-color: #cfeef3ff; /* Light gray background */
+  border-color: #cfeef3ff;
+  border-radius: 8px;
+  color:rgba(3, 71, 57, 1); /* Dark gray text */
+  transition: all 0.3s ease;
+}
 
+.bruh:focus {
+  background-color: #cfeef3ff; /* White background on focus */
+  border-color: #cfeef3ff;
+  box-shadow: 0 0 0 0.2rem #cfeef3ff; /* Green shadow */
+
+}
+
+.bruh:disabled {
+  background-color: #cfeef3ff; /* Disabled gray background */
+  border-color: #cfeef3ff; /* Disabled gray border */
+  color: #6c757d; /* Muted text color */
+  cursor: not-allowed;
+}
+
+.nav-btn{
+  background-color: #cfeef3ff!important;
+  color: rgba(3, 71, 57, 1) !important;
+  border-color: #599354!important;
+  z-index: 10; /* Ensures button is above the background */
+ 
+}
+
+.nav-btn.active {
+  background-color: rgba(3, 71, 57, 1) !important;
+   color:  #F1FCF6!important;
+  border: 2px solid #599354;
+  z-index: 10; /* Ensures button is above the background */
+  border-bottom:none !important;
+  
+}
+
+
+
+
+
+
+  

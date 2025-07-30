@@ -10,55 +10,55 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: end;
+  justify-content: center;
   margin: 0;
   padding: 0;
 }
 
 .sidebar {
-  background-image: url('./assets/EGGfinal3.svg');
-  background-size: contain;
-  background-position: start;
-  background-repeat: no-repeat;
   position: fixed;
   flex-direction: column;
   top: 0;
   left: 0;
   width: 20vw;
   height: 100vh;
-  background-color:rgb(255, 255, 255);
-  border-right: solid 1px black;
-  filter: drop-shadow(0px 4px 5px  rgb(0, 0, 0)); 
+  background-image: linear-gradient(to right top, #144e38, #00A86F);
+  padding: 1rem;
+
+
+ /* Blurs what's behind the element */
+  border-right: solid 3px #1e232c59;
+  box-shadow: 0 0 200px 600px rgba(0, 0, 0, 1);
+
+
 
 }
 
-/*.sidebar-button {
-  font-family: 'Pixelify Sans', sans-serif;
-  font-size: clamp(.5rem, 2vw, 1.5rem);
-  width: 26vh;
-  height: 10vh;
-  background-color: rgb(255, 255, 255);
-  border: none;
-  cursor: pointer;
-  margin-bottom: 40px;
-  border-radius: 50px; 
-  filter: drop-shadow(0px 4px 4px  rgba(0, 0, 0, 0.38)); 
-  border: solid 1px rgb(0, 0, 0);
+.logo-container {
+  background-image: url('./assets/EGGfinal3.svg') ;
+  background-size: contain;
+  position: absolute;
+  flex-direction: row;
+  background-repeat: no-repeat;
+  top: 10px;
+  left: 10px;
+  width: 19vw;
+  height: 10vw;
+ 
 }
 
-.sidebar-button: last-child {
-  margin-bottom: 0;
+.logo{
+  background-image: url('./assets/logo frame.svg');
+  background-size: contain;
+  position: absolute;
+  flex-direction: row;
+  background-repeat: no-repeat;
+  top: 4vw;
+  right: 10px;
+  width: 8vw;
+  height: 5vw;
+  
 }
-
-.sidebar-button {
-  color: black; 
-}
-
-.sidebar-button:hover {
-  background-color: rgb(220, 220, 220);
-}*/
-
-
 .app-shell {
   display: flex;
   width: 100%;
@@ -73,119 +73,56 @@
   flex-direction: column;
 }
 
-.btn-menu{
-  display: flex;
-  font-family: 'Pixelify Sans', sans-serif;
-  font-size: clamp(1rem, 2vw, 1.5rem);
+
+
+
+.btn {
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid #0a0a0a;
+  background-color: #144E38;
+  padding: 6px 12px;
+  color: #f5f5f5;
+  box-shadow:
+    inset 0 1px #144E38,
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 4rem;
   width: 26vh;
   height: 10vh;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  font-size: 1rem;
-  line-height: 1;   
-  border:none;
-}
-
-.sidebar-button {
-  background: linear-gradient(315deg,rgb(137, 216, 211) 0%, #03c8a8 74%);
-  line-height: 10vh;
-  padding: 0;
+  border-radius: 50px;
+} 
+ 
+.btn:hover {
+  background-color: #E8F3F5;
+  transition: all 0.3s ease;
   border: none;
-  position: relative;
-  margin-bottom: 40px;
-  
+
 }
-.sidebar-button span {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.sidebar-button:before,
-.sidebar-button:after {
-  position: absolute;
+
+ 
+.btn{
   content: "";
-  right: 0;
-  bottom: 0;
-  background: rgba(137, 216, 211,1);
+  inset: 5;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), transparent);
+} 
+ 
+
+
+.btn.active {
+ background-color: #E8F3F5;
   box-shadow:
-   -7px -7px 20px 0px rgba(255,255,255,.9),
-   -4px -4px 5px 0px rgba(255,255,255,.9),
-   7px 7px 20px 0px rgba(0,0,0,.2),
-   4px 4px 5px 0px rgba(0,0,0,.3);
-  transition: all 0.3s ease;
-}
-.sidebar-button:before{
-   height: 0%;
-   width: 2px;
-}
-.sidebar-button:after {
-  width: 0%;
-  height: 2px;
-}
-.sidebar-button:hover{
-  color: rgba(137, 216, 211,1);
-  background: transparent;
-}
-.sidebar-button:hover:before {
-  height: 100%;
-}
-.sidebar-button:hover:after {
-  width: 100%;
-}
-.sidebar-button span:before,
-.sidebar-button span:after {
-  position: absolute;
-  content: "";
-  left: 0;
-  top: 0;
-  background: rgba(137, 216, 211,1);
-  box-shadow:
-   -7px -7px 20px 0px rgba(255,255,255,.9),
-   -4px -4px 5px 0px rgba(255,255,255,.9),
-   7px 7px 20px 0px rgba(0,0,0,.2),
-   4px 4px 5px 0px rgba(0,0,0,.3);
-  transition: all 0.3s ease;
-}
-.sidebar-button span:before {
-  width: 2px;
-  height: 0%;
-}
-.sidebar-button span:after {
-  height: 2px;
-  width: 0%;
-}
-.sidebar-button span:hover:before {
-  height: 100%;
-}
-.sidebar-button span:hover:after {
-  width: 100%;
-}
-
-
-.sidebar-button.active {
-  background: transparent;
-  color: rgb(0, 0, 0);
-  /*add inner shadow*/
-  box-shadow: inset 0 0 100px rgba(137, 216, 211,1);
-  transition: all 0.3s ease;
-}
-
-.sidebar-button.active:before {
-  height: 100%;
+    inset 0 1px #262626,
+    0 0 #0000;
   
-}
-.sidebar-button.active:after {
-  width: 100%;
+
+
 }
 
-.sidebar-button.active span:before {
-  height: 100%;
-}
-.sidebar-button.active span:after {
-  width: 100%;
-}
+
+
 
 
 

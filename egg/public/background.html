@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <script type="module">
+      // Load the compiled JS scheduler (from background-scheduler.ts)
+      import("../dist-electron/background-scheduler.js")
+        .then(() => console.log("✅ background-scheduler.js loaded"))
+        .catch(err => console.error("❌ Failed to load background scheduler:", err));
+    </script>
+  </body>
+</html>
