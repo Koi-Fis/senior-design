@@ -12,7 +12,7 @@ const pages = [
 ];
 
 function App() {
-  const [activePage, setActivePage] = useState<string>('care-schedule');
+  const [activePage, setActivePage] = useState<string>('home');
 
 
 
