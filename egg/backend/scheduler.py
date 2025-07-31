@@ -1,10 +1,12 @@
 from crontab import CronTab
 import sys
+import os
 from datetime import datetime
 
 # python [task] [time12hr] [frequency]
 # Ex: python scheduler.py 'water_plants' '08:15' 'daily'
 
+ABS_DIR = os.getcwd() + "/"
 
 # Frontend passes task, time, and frequency.
 # 1. Check for and remove prior jobs
@@ -24,11 +26,11 @@ def create_job(cron, task, time, frequency):
 
     # Every other day and bi-weekly must be calculated every day/week
     if(frequency=='every other day'):
-        bash = "every_other_day.sh" + " " + task + ".sh"
+        bash = ABS_DIR + "every_other_day.sh" + " " + task + ".sh"
     elif(frequency=='bi-weekly'):
-        bash = "bi_weekly.sh" + " " + task + ".sh"
+        bash = ABS_DIR + "bi_weekly.sh" + " " + task + ".sh"
     else:
-        bash = task + ".sh"
+        bash = ABS_DIR + task + ".sh"
 
     # Create job
     print(f"Scheduling '{task}'")

@@ -1,7 +1,6 @@
 #!/bin/bash
 
-echo "echo "Initializing database updater at $(date)" >> /home/osboxes/senior-design/egg/backend/logs/scheduler.log 2>1"
-
+echo "Initializing database updater at $(date)" >> /home/osboxes/senior-design/senior-design/egg/backend/logs/scheduler.log 2>&1
 # Absolute path to Python
 PYTHON="/usr/bin/python3"
 
