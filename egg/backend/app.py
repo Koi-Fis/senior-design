@@ -36,12 +36,19 @@ def last_sensor():
         else:
             return
 
-@app.route("/api/cron_water")
-def cron_water():
+# example:
+# 127.0.0.1:5173/api/schedule?task=check_sensors&hour=08&min=30&ampm=PM&freq=daily
+@app.route("/api/schedule")
+def cron_schedule():
+    task = request.args.get("task")
+    hour = request.args.get("hour")
+    min = request.args.get("min")
+    ampm = request.args.get("ampm")
     freq = request.args.get("freq")
-    command = f"sudo python scheduler.py {freq}"
+    command = f"python scheduler.py {task} {hour}:{min}_{ampm} {freq}"
+    print(command)
     subprocess.run(command, shell=True)
-    return "<p>Watering frequency set to " + freq + " minutes!</p>"
+    return command
 
 
 @app.route("/api/pump", methods=["GET"])
