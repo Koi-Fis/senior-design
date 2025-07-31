@@ -8,7 +8,7 @@ type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
 const loadFromStorage = <T,>(key: string, fallback: T): T => {
   try {
     const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) as T : fallback;
+    return stored ? (JSON.parse(stored) as T) : fallback;
   } catch {
     return fallback;
   }
@@ -27,6 +27,33 @@ const removeFromStorage = (key: string) => {
     localStorage.removeItem(key);
   } catch {
     // Handle error
+  }
+};
+
+//for manual controls
+const manualControl = async (urlOn: string, urlOff: string, action: string, duration: number = 15000) => {
+  try {
+    console.log(`🔧 Manual ${action} ON:`, urlOn);
+    const responseOn = await fetch(urlOn, { method: "GET" });
+
+    if (responseOn.ok) {
+      console.log(`✅ ${action} ON successful - auto OFF in ${duration/1000}s`);
+      
+      setTimeout(async () => {
+        try {
+          console.log(`🔧 Auto ${action} OFF:`, urlOff);
+          const responseOff = await fetch(urlOff, { method: "GET" });
+          console.log(responseOff.ok ? `✅ ${action} OFF successful` : `❌ ${action} OFF failed`);
+        } catch (error) {
+          console.error(`❌ ${action} OFF error:`, error);
+        }
+      }, duration);
+      
+    } else {
+      console.error(`❌ ${action} ON failed:`, responseOn.status);
+    }
+  } catch (error) {
+    console.error(`❌ ${action} ON error:`, error);
   }
 };
 
@@ -62,7 +89,9 @@ function DeviceTab({
       tabIndex={0}
     >
       <div className="wtr-in">
-        <label htmlFor={`${id}-time`} className="form-label">Schedule:</label>
+        <label htmlFor={`${id}-time`} className="form-label">
+          Schedule:
+        </label>
         <input
           type="time"
           id={`${id}-time`}
@@ -73,7 +102,9 @@ function DeviceTab({
         />
       </div>
       <div className="wtr-in">
-        <label htmlFor={`${id}-frequency`} className="form-label">Frequency:</label>
+        <label htmlFor={`${id}-frequency`} className="form-label">
+          Frequency:
+        </label>
         <select
           id={`${id}-frequency`}
           className="form-select form-select-sm me-2 bruh"
@@ -218,7 +249,9 @@ function CareSchedule() {
           {TABS.map((tab) => (
             <li className="nav-item" role="presentation" key={tab.key}>
               <button
-                className={`nav-link${activeTab === tab.key ? " active" : ""} nav-btn`}
+                className={`nav-link${
+                  activeTab === tab.key ? " active" : ""
+                } nav-btn`}
                 id={`${tab.key}-tab`}
                 type="button"
                 role="tab"
@@ -268,9 +301,41 @@ function CareSchedule() {
           />
         </div>
       </div>
-    </div>
-  );
 
+      <div className="manual-controls mt-4">
+        <button
+          className="btn btn-primary"
+          onClick={() =>
+            {
+            manualControl("http://192.168.50.137/pump/on", "http://192.168.50.137/pump/off", "Water Now")
+            }
+          }
+        >
+          Water Now
+        </button>
+        <button
+          className="btn btn-fan"
+          onClick={() =>
+            {
+            manualControl("http://192.168.50.137/fan1/on", "http://192.168.50.137/fan1/off", "Fan On")
+            }
+          }
+        >
+          Toggle Fan
+        </button>
+        <button
+          className="btn btn-light"
+          onClick={() =>
+            {
+            manualControl("http://192.168.50.100/grow_light/on", "http://192.168.50.100/grow_light/off", "Light On")
+            }
+          }
+        >
+          Toggle Light
+        </button>
+      </div>
+*/    </div>
+  );
 }
 
 export default CareSchedule;
