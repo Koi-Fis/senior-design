@@ -92,6 +92,7 @@ def main():
     # Take input passed from frontend
     task = sys.argv[1]
     time_12hr = sys.argv[2]
+    time_12hr = time_12hr.replace("_", " ")
     frequency = sys.argv[3]
 
     # Convert 12 hour format to 24 hour format
