@@ -1,18 +1,20 @@
-// Create new file: src/care-schedule/useElectronSchedule.tsx
-
+// src/care-schedule/useElectronSchedule.tsx
 import { useEffect } from "react";
 
 type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
 
 interface ElectronScheduleOptions {
-  id: string; // unique identifier for the schedule
-  enabled: boolean;
-  time: string; // "HH:mm"
-  frequency: Frequency;
+  id: string;              // unique identifier for the schedule
+  enabled: boolean;        // whether the schedule is active
+  time: string;            // in "HH:mm" format
+  frequency: Frequency;    // repetition pattern
   urlOn: string | string[];
   urlOff: string | string[];
 }
 
+/**
+ * Hook to create and manage device command schedules via Electron main process
+ */
 function useElectronSchedule({
   id,
   enabled,
@@ -22,46 +24,42 @@ function useElectronSchedule({
   urlOff,
 }: ElectronScheduleOptions) {
   useEffect(() => {
-    // Only proceed if we have the electron API available
-    if (!window.electronAPI) {
-      console.warn('Electron API not available');
+    // Ensure the schedule API bridge is available
+    if (!window.electronAPI?.schedule) {
+      console.warn("Electron schedule API not available");
       return;
     }
 
-    const scheduleData = {
-      id,
-      enabled,
-      time,
-      frequency,
-      urlOn,
-      urlOff,
-    };
+    const scheduleData = { id, enabled, time, frequency, urlOn, urlOff };
 
     // Create or update the schedule in the main process
-    window.electronAPI.createSchedule(scheduleData)
-      .then(result => {
-        console.log(`Schedule ${id}:`, result.message);
+    window.electronAPI.schedule
+      .createSchedule(scheduleData)
+      .then((result) => {
+        console.log(`Schedule '${id}': ${result.message}`);
       })
-      .catch(error => {
-        console.error(`Failed to create schedule ${id}:`, error);
+      .catch((error) => {
+        console.error(`Failed to create/update schedule '${id}':`, error);
       });
 
-    // Cleanup function - this won't clear the schedule when component unmounts
-    // The schedule will persist in the main process
+    // Cleanup: clear the schedule when it becomes disabled
     return () => {
-      // Only clear if explicitly disabled, not on component unmount
-      if (!enabled) {
-        window.electronAPI.clearSchedule(id).catch(console.error);
+      if (!enabled && window.electronAPI?.schedule) {
+        window.electronAPI.schedule.clearSchedule(id).catch((err) => {
+          console.error(`Failed to clear schedule '${id}':`, err);
+        });
       }
     };
   }, [id, enabled, time, frequency, urlOn, urlOff]);
 
-  // Method to manually clear the schedule
+  /**
+   * Manually clear the schedule
+   */
   const clearSchedule = () => {
-    if (window.electronAPI) {
-      return window.electronAPI.clearSchedule(id);
+    if (!window.electronAPI?.schedule) {
+      return Promise.reject("Electron schedule API not available");
     }
-    return Promise.reject('Electron API not available');
+    return window.electronAPI.schedule.clearSchedule(id);
   };
 
   return { clearSchedule };

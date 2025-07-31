@@ -3,6 +3,9 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import { createSplashWindow, closeSplashWindow } from './splash.ts'
+import { ArduinoDataService } from './ArduinoDataService';
+import { IPC_CHANNELS } from './types/arduino';
+import type { ArduinoConfig } from './types/arduino';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -26,6 +29,17 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
 let win: BrowserWindow | null
+let arduinoService: ArduinoDataService | null = null;
+
+// Arduino configuration - make this configurable via settings
+const ARDUINO_CONFIG: ArduinoConfig = {
+  endpoint: 'http://192.168.50.137/data.json',
+
+  //do every 2 mins
+  pollInterval: 120000, // 2 minutes
+  timeout: 15000, // 15 seconds
+  retryAttempts: 3
+};
 
 // ============= SCHEDULING CODE =============
 
@@ -139,7 +153,7 @@ function clearSchedule(id: string) {
   }
 }
 
-// IPC handlers
+// IPC handlers for scheduling
 ipcMain.handle('create-schedule', (event, scheduleData: ScheduleData) => {
   console.log('Creating schedule:', scheduleData);
   
@@ -164,6 +178,44 @@ ipcMain.handle('get-active-schedules', () => {
 
 // ============= END SCHEDULING CODE =============
 
+// ============= ARDUINO SERVICE SETUP =============
+
+const setupArduinoService = (): void => {
+  if (!win) return;
+  
+  // Initialize Arduino service
+  arduinoService = new ArduinoDataService(ARDUINO_CONFIG);
+  arduinoService.setMainWindow(win);
+  
+  // Setup IPC handlers for Arduino
+  setupArduinoIpcHandlers();
+  
+  // Start the service
+  arduinoService!.start().catch((error: unknown) => {
+    console.error('Failed to start Arduino service:', error);
+  });
+};
+
+const setupArduinoIpcHandlers = (): void => {
+  // Handle requests for current Arduino data
+  ipcMain.handle(IPC_CHANNELS.GET_ARDUINO_DATA, async () => {
+    if (!arduinoService) {
+      throw new Error('Arduino service not initialized');
+    }
+    return arduinoService.getCurrentState();
+  });
+
+  // Handle Arduino config updates
+  ipcMain.handle(IPC_CHANNELS.UPDATE_ARDUINO_CONFIG, async (_, newConfig) => {
+    if (!arduinoService) {
+      throw new Error('Arduino service not initialized');
+    }
+    arduinoService.updateConfig(newConfig);
+  });
+};
+
+// ============= END ARDUINO SERVICE SETUP =============
+
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay()
   const { width, height } = primaryDisplay.workAreaSize
@@ -175,10 +227,14 @@ function createWindow() {
     y: 0,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     show: false, // Don't show the main window initially
+    frame: true, // Ensure window has a frame (prevents content from being clipped)
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
   })
+
+  // Setup Arduino service
+  setupArduinoService();
 
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
@@ -198,15 +254,20 @@ function createWindow() {
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL)
   } else {
-    // win.loadFile('dist/index.html')
     win.loadFile(path.join(RENDERER_DIST, 'index.html'))
   }
+  
 }
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
+  // Stop Arduino service before quitting
+  if (arduinoService) {
+    arduinoService.stop();
+  }
+  
   if (process.platform !== 'darwin') {
     app.quit()
     win = null
@@ -221,6 +282,13 @@ app.on('activate', () => {
     createWindow()
   }
 })
+
+// Handle app closing cleanup
+app.on('before-quit', () => {
+  if (arduinoService) {
+    arduinoService.stop();
+  }
+});
 
 app.whenReady().then(() => {
   createSplashWindow()

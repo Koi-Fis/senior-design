@@ -11,7 +11,7 @@ const pages = [
 ];
 
 function App() {
-  const [activePage, setActivePage] = useState<string>('home');
+  const [activePage, setActivePage] = useState<string>('care-schedule');
 
 
 
@@ -41,6 +41,7 @@ function App() {
       <div className="page-container">
         {activePage == 'home' && <Home />}
         {activePage === 'care-schedule' && <CareSchedule />}
+        {activePage == 'home' && <Home />}
         {activePage === 'growth-compass' && <GrowthCompass />}
         {/* add other pages here when you build them */}
       </div>

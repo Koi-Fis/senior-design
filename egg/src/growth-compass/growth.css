@@ -1,20 +1,21 @@
 @import '../App.css';
-
 .canvas-container {
   position: relative;
   display: flex;
   margin-left: 20vw;
   width: calc(100vw - 20vw);
   min-height: 100vh;
-  justify-content: center;
-  align-items: flex-start;
+  max-height: 100vh; /* Add this to constrain height */
+  justify-content: flex-start; /* Change from center to flex-start */
+  align-items: center; /* Change to center for horizontal alignment */
   overflow-x: hidden;
   overflow-y: auto;
   z-index: 0;
   isolation: isolate;
   flex-direction: column;
   gap: 2rem;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 2rem 1rem; /* Increase top padding even more */
+  box-sizing: border-box; /* Add this for proper sizing */
 }
 
 .canvas-container::before {

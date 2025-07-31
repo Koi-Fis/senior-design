@@ -13,6 +13,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./growth.css";
+import { useArduinoData } from "../hooks/useArduinoData";
 
 // -----------------------------
 // Types
@@ -32,13 +33,15 @@ type SensorData = {
   humidity: number;
   moisture_one: number;
   moisture_two: number;
+  nitrogen: number;
+  phosphorus: number;
+  potassium: number;
 };
 
 // -----------------------------
 // Config
 // -----------------------------
 const PLANTBOOK_TOKEN = "fc6cec3131e4a6873732f919be941bd8736b4836";
-const SENSOR_URL = "http://192.168.50.137/data.json";
 
 const plantOptions = [
   { key: "radish andes f1", label: "Radish" },
@@ -58,10 +61,10 @@ const PlantContext = createContext<{
 // Utility: Normalize Moisture
 // -----------------------------
 function normalizeMoisture(raw: number): number {
-  const dry = 0; // 0 = dry (0%)
-  const wet = 70; // 70 = wet (100%)
-  const clamped = Math.min(Math.max(raw, dry), wet);
-  return Math.round((clamped / wet) * 100);
+  const dry = 987; // 0 = dry (0%)
+  const wet = 469; // 70 = wet (100%)
+  const clamped = Math.max(Math.min(raw, dry), wet);
+  return Math.round(((dry - clamped) / (dry - wet)) * 100);
 }
 
 // -----------------------------
@@ -70,38 +73,48 @@ function normalizeMoisture(raw: number): number {
 export default function PlantRadarComparison() {
   const [selectedPlant, setSelectedPlant] = useState<string>("radish andes f1");
   const [plantData, setPlantData] = useState<PlantDetailData | null>(null);
-  const [sensorData, setSensorData] = useState<SensorData | null>(null);
+  
+  // Use the new Arduino data hook instead of direct fetch
+  const { data: arduinoData, isConnected, error } = useArduinoData();
+  // Add debugging
+console.log("🔍 Debug Arduino Data:");
+console.log("- arduinoData:", arduinoData);
+console.log("- isConnected:", isConnected);
+console.log("- error:", error);
+
+  
+  // Convert Arduino data to the format expected by the existing component
+  const sensorData: SensorData | null = arduinoData ? {
+    temperature_celcius: arduinoData.temperature_celcius,
+    humidity: arduinoData.humidity,
+    moisture_one: arduinoData.moisture_one,
+    moisture_two: arduinoData.moisture_two,
+    nitrogen: arduinoData.nitrogen,
+    phosphorus: arduinoData.phosphorus,
+    potassium: arduinoData.potassium,
+  } : null;
 
   useEffect(() => {
-    const fetchAll = async () => {
+    const fetchPlantData = async () => {
       try {
         const slug = encodeURIComponent(selectedPlant);
 
-        const [plantRes, sensorRes] = await Promise.all([
-          fetch(`https://open.plantbook.io/api/v1/plant/detail/${slug}`, {
-            headers: {
-              Authorization: `Token ${PLANTBOOK_TOKEN}`,
-            },
-          }),
-          fetch(SENSOR_URL),
-        ]);
+        const plantRes = await fetch(`https://open.plantbook.io/api/v1/plant/detail/${slug}`, {
+          headers: {
+            Authorization: `Token ${PLANTBOOK_TOKEN}`,
+          },
+        });
 
-        if (!plantRes.ok || !sensorRes.ok)
-          throw new Error("Failed to fetch data");
+        if (!plantRes.ok) throw new Error("Failed to fetch plant data");
 
         const plantJson = await plantRes.json();
-        const sensorJson = await sensorRes.json();
-
         setPlantData(plantJson);
-
-        const latestSensor = sensorJson[sensorJson.length - 1];
-        setSensorData(latestSensor);
       } catch (err) {
         console.error(err);
       }
     };
 
-    fetchAll();
+    fetchPlantData();
   }, [selectedPlant]);
 
   const radarData =
@@ -127,17 +140,17 @@ export default function PlantRadarComparison() {
           },
           {
             metric: "Potassium",
-            Sensor: 5,
+            Sensor: sensorData.potassium,
             Ideal: 10,
           },
           {
             metric: "Phosphorus",
-            Sensor: 5,
+            Sensor: sensorData.phosphorus,
             Ideal: 10,
           },
           {
             metric: "Nitrogen",
-            Sensor: 5,
+            Sensor: sensorData.nitrogen,
             Ideal: 20,
           },
         ]
@@ -164,16 +177,16 @@ export default function PlantRadarComparison() {
             />
             <div className="gauge-label">
               {sensorData && plantData
-                ? (() => {
-                    const tempF = (sensorData.temperature_celcius * 9) / 5 + 32;
-                    const idealMin = (plantData.min_temp * 9) / 5 + 32;
-                    const idealMax = (plantData.max_temp * 9) / 5 + 32;
-                    
-                    if (tempF < idealMin) return `Cold ${tempF.toFixed(1)}°F`;
-                    if (tempF > idealMax) return `Hot ${tempF.toFixed(1)}°F`;
-                    return `Ideal ${tempF.toFixed(1)}°F`;
-                  })()
-                : "Loading..."}
+              ? (() => {
+                const tempF = (sensorData.temperature_celcius * 9) / 5 + 32;
+                const idealMin = (plantData.min_temp * 9) / 5 + 32;
+                const idealMax = (plantData.max_temp * 9) / 5 + 32;
+                
+                if (tempF < idealMin) return `Cold ${tempF.toFixed(1)}°F`;
+                if (tempF > idealMax) return `Hot ${tempF.toFixed(1)}°F`;
+                return `Ideal ${tempF.toFixed(1)}°F`;
+                })()
+              : isConnected ? "Loading..." : "Disconnected"}
             </div>
           </div>
 
@@ -202,7 +215,7 @@ export default function PlantRadarComparison() {
                     if (humidity > idealMax) return `High ${humidity.toFixed(1)}%`;
                     return `Ideal ${humidity.toFixed(1)}%`;
                   })()
-                : "Loading..."}
+                : isConnected ? "Loading..." : "Disconnected"}
             </div>
           </div>
 
@@ -233,7 +246,7 @@ export default function PlantRadarComparison() {
                     if (avgMoisture >= 70) return `Wet ${avgMoisture.toFixed(0)}%`;
                     return `Ideal ${avgMoisture.toFixed(0)}%`;
                   })()
-                : "Loading..."}
+                : isConnected ? "Loading..." : "Disconnected"}
             </div>
           </div>
         </div>
