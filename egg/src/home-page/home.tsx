@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Placeholder from 'react-bootstrap/Placeholder';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import LoadingButton from './loadingButton';
+// import LoadingButton from './loadingButton';
 import { useArduinoData } from '../hooks/useArduinoData';
 
 /**
@@ -49,13 +49,13 @@ export default function HomePage(): JSX.Element {
       <div className="stats-container">
         {error && <div className="alert alert-danger">{error}</div>}
 
-        <LoadingButton
+        {/* <LoadingButton
           onClick={refreshData}
           disabled={!isConnected || isLoading}
           label={isLoading ? 'Refreshing...' : 'Refresh Data'}
-        />
+        /> */}
 
-        <div className="text-muted mb-2">
+        <div className={`mb-2 timestamp ${isConnected ? 'connected' : 'disconnected'}`}>
           {isConnected
             ? `Last update: ${new Date(lastUpdate).toLocaleString()}`
             : 'Disconnected'}
