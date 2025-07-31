@@ -19,6 +19,9 @@ def list_jobs(cron):
 
 def create_job(cron, task, time, frequency):
     # Account for time
+    hour, minute = map(int, time.split(':'))
+    weekday = (datetime.today().weekday() + 1) % 7
+
     # Every other day and bi-weekly must be calculated every day/week
     if(frequency=='every other day'):
         bash = "every_other_day.sh" + " " + task + ".sh"
@@ -27,8 +30,35 @@ def create_job(cron, task, time, frequency):
     else:
         bash = task + ".sh"
 
+    # Create job
     print(f"Scheduling '{task}'")
     job = cron.new(command=bash, comment=task)
+
+    # TODO: Schedule time and frequency
+    if (frequency == 'daily') or (frequency == 'every other day'):
+        print(f"Scheduling job {task} {frequency} at {hour}:{minute}")
+        job.setall(f"{minute} {hour} * * *")
+    elif (frequency == 'weekly') or (frequency == 'bi-weekly'):
+        day_name = ""
+        if weekday==0 or weekday==7:
+            day_name="sunday"
+        elif weekday==1:
+            day_name="monday"
+        elif weekday==2:
+            day_name="tuesday"
+        elif weekday==3:
+            day_name="wednesday"
+        elif weekday==4:
+            day_name="thursday"
+        elif weekday==5:
+            dayname="friday"
+        elif weekday==6:
+            dayname="saturday"
+        print(f"Scheduling job {task} {frequency} on {day_name}s at {hour}:{minute}")
+        job.setall(f"{minute} {hour} * * {weekday}")
+    else:
+        print(f"Frequency '{frequency}' is not valid")
+
     cron.write()
     return
 
