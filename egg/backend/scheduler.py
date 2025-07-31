@@ -2,53 +2,48 @@ from crontab import CronTab
 import sys
 from datetime import datetime
 
-def init(cron):
-    job = cron.new(command='egg/backend/update.sh >> /home/osboxes/Documents/senior-design/egg/backend/logs/scheduler.log 2>1')
-    job.minute.every(5)
+# python [task] [time12hr] [frequency]
+# Ex: python scheduler.py 'water_plants' '08:15' 'daily'
+
+
+# Frontend passes task, time, and frequency.
+# 1. Check for and remove prior jobs
+# 2. Run frequency bash
+# 3. Run task with frequency
+
+def list_jobs(cron):
+    count = len(list(cron))
+    print(f"Tasks Scheduled [{count}]:")
+    for job in cron:
+        print(job)
+
+def create_job(cron, task, time, frequency):
+    # Account for time
+    # Every other day and bi-weekly must be calculated every day/week
+    if(frequency=='every other day'):
+        bash = "every_other_day.sh" + " " + task + ".sh"
+    elif(frequency=='bi-weekly'):
+        bash = "bi_weekly.sh" + " " + task + ".sh"
+    else:
+        bash = task + ".sh"
+
+    print(f"Scheduling '{task}'")
+    job = cron.new(command=bash, comment=task)
     cron.write()
     return
 
-def create_job(cron, freq):
-    job = cron.new(command='echo "Running scheduler.py at $(date)" >> /home/osboxes/Documents/senior-design/egg/backend/logs/scheduler.log 2>1')
-    job.minute.every(freq)
-    cron.write()
-    return
-
-def cron_schedule(cron, am_pm_time, days):
-    job = cron.new(command='echo "Running cron schedule at $(date)" >> /home/osboxes/Documents/senior-design/egg/backend/logs/scheduler.log 2>1')
-    time = convert_time(am_pm_time)
-    min, hour = time.split(':')
-    
-    if(days == "daily"):
-        str = min + " " + hour + " * * *"
-        job.setall(str)
+# Deletes ALL existing instances of "task"
+def delete_job(cron, task):
+    removed = False # Flag is used to prevent running cron.write more than necessary
+    for job in cron:
+        if job.comment==task:
+            print(f"Clearing prior job instance of '{task}' containing {job.command}")
+            cron.remove(job)
+            removed = True
+    if removed:
         cron.write()
-
-    elif(days == "weekly"):
-        str = min + " " + hour + " * * 0"
-        job.setall(str)
-        cron.write()
-
-    '''
-    # if week%2
-    #     water
-    #     week=0
-    # week++
-    elif(days == "bi-weekly"):
-        str = min + " " + hour + " 1,15 * *"
-        job.setall(str)
-        cron.write()
-
-    elif(days == "every other day"):
-    '''
-
-    return
-
-def delete_job(cron):
-    jobs = list(cron)
-    if jobs:
-        cron.remove(jobs[0])
-        cron.write()
+    else:
+        print(f"No task found called '{task}'")
     return
 
 # library function for converting am/pm time to 24hr time
@@ -61,19 +56,27 @@ def convert_time(input):
         return "Invalid input, use HH:MM AM/PM."
 
 def main():
+    # Initialize cron object
     cron = CronTab(user=True)
-    
-    # init(cron)
-    # create_job(cron, sys.argv[1])
 
-    # example:
-    # python scheduler.py '08:15' 'daily'
-    cron_schedule(cron, sys.argv[1], sys.argv[2])
+    # Take input passed from frontend
+    task = sys.argv[1]
+    time_12hr = sys.argv[2]
+    frequency = sys.argv[3]
 
-    #delete_job(cron)
+    # Convert 12 hour format to 24 hour format
+    time_24hr = convert_time(time_12hr)
 
-    for job in cron:
-        print(job)
+    # TODO: Validate input?
+
+    # Clear prior instance of task
+    delete_job(cron, task)
+
+    # Create new instance of task
+    create_job(cron, task, time_24hr, frequency)
+
+    # List current jobs
+    list_jobs(cron)
 
     return
 
