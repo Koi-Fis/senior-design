@@ -53,6 +53,8 @@ def main():
             check_sensors()
     elif run=="run_fans":
         run_fans(sys.argv[2])
+    elif run=="update_database":
+         update_database()
     else:
         print("function not found")
         exit()
