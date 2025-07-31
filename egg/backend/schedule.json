@@ -1,0 +1,17 @@
+{
+    "water_plants": {
+        "frequency": "",
+        "last_run": "",
+        "init_date": ""
+    },
+    "run_fans": {
+        "frequency": "",
+        "last_run": "",
+        "init_date": ""
+    },
+    "power_lights": {
+        "frequency": "",
+        "last_run": "",
+        "init_date": ""
+    }
+}
