@@ -5,7 +5,7 @@ TASK="$1"
 
 # Validate input
 if [ -z "$TASK" ]; then
-    echo "Usage: $0 TASK_NAME"
+    echo "Usage: $0 task"
     exit 1
 fi
 
@@ -21,12 +21,12 @@ if [ "$LAST_RUN" == "null" ]; then
     exit 1
 fi
 
-# Calculate day difference
+# Calculate day Difference
 DIFF=$(( ( $(date -d "$TODAY" +%s) - $(date -d "$LAST_RUN" +%s) ) / 86400 ))
 
 # Run task if it's been 2 or more days
-if (( DAYS_DIFF >= 2 )); then
-    echo "[$TASK] It's been $DAYS_DIFF days. Running task..."
+if (( DIFF >= 2 )); then
+    echo "[$TASK] It's been $DIFF days. Running task..."
 
     bash "$SCRIPT"
 
@@ -34,5 +34,5 @@ if (( DAYS_DIFF >= 2 )); then
     TMP_FILE=$(mktemp)
     jq --arg task "$TASK" --arg date "$TODAY" '.[$task].last_run = $date' "$SCHEDULE_FILE" > "$TMP_FILE" && mv "$TMP_FILE" "$SCHEDULE_FILE"
 else
-    echo "[$TASK] Only $DAYS_DIFF days since last run. Skipping."
+    echo "[$TASK] Only $DIFF days since last run. Skipping."
 fi

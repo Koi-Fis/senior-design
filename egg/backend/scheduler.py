@@ -1,6 +1,7 @@
 from crontab import CronTab
 import sys
 import os
+import json
 from datetime import datetime
 
 # python [task] [time12hr] [frequency]
@@ -18,6 +19,7 @@ def list_jobs(cron):
     print(f"Tasks Scheduled [{count}]:")
     for job in cron:
         print(job)
+    return
 
 def create_job(cron, task, time, frequency):
     # Account for time
@@ -25,9 +27,9 @@ def create_job(cron, task, time, frequency):
     weekday = (datetime.today().weekday() + 1) % 7
 
     # Every other day and bi-weekly must be calculated every day/week
-    if(frequency=='every other day'):
+    if(frequency=='every_other_day'):
         bash = ABS_DIR + "every_other_day.sh" + " " + task + ".sh"
-    elif(frequency=='bi-weekly'):
+    elif(frequency=='bi_weekly'):
         bash = ABS_DIR + "bi_weekly.sh" + " " + task + ".sh"
     else:
         bash = ABS_DIR + task + ".sh"
@@ -37,10 +39,10 @@ def create_job(cron, task, time, frequency):
     job = cron.new(command=bash, comment=task)
 
     # TODO: Schedule time and frequency
-    if (frequency == 'daily') or (frequency == 'every other day'):
+    if (frequency == 'daily') or (frequency == 'every_other_day'):
         print(f"Scheduling job {task} {frequency} at {hour}:{minute}")
         job.setall(f"{minute} {hour} * * *")
-    elif (frequency == 'weekly') or (frequency == 'bi-weekly'):
+    elif (frequency == 'weekly') or (frequency == 'bi_weekly'):
         day_name = ""
         if weekday==0 or weekday==7:
             day_name="sunday"
@@ -86,6 +88,35 @@ def convert_time(input):
         return time.strftime('%H:%M')
     except ValueError:
         return "Invalid input, use HH:MM AM/PM."
+    
+def update_init(task, frequency):
+    path = ABS_DIR + "schedule.json"
+
+    # Validate path
+    if not os.path.exists(path):
+        print(f"[update_init] metadata file not found at {path}, skipping metadata collection.")
+        return
+
+    # Load JSON
+    with open(path, "r") as f:
+        meta = json.load(f)
+    
+    # Skip if metadata is not tracked and return
+    if task not in meta:
+        print(f"[update_init] task '{task}' not in metadata, skipping metadata collection.")
+        return
+
+    entry = meta[task]
+    entry["frequency"] = frequency                  # Update frequency
+    entry["init_date"] = datetime.now().isoformat() # Update init date
+
+    # Save JSON
+    tmp = path + ".tmp"
+    with open(tmp, "w") as f:
+        json.dump(meta, f, indent=4)
+    os.replace(tmp, path)
+
+    return
 
 def main():
     # Initialize cron object
@@ -107,6 +138,9 @@ def main():
 
     # Create new instance of task
     create_job(cron, task, time_24hr, frequency)
+
+    # Update initialization date
+    update_init(task, frequency)
 
     # List current jobs
     list_jobs(cron)
