@@ -43,6 +43,9 @@ export default function HomePage(): JSX.Element {
 
   return (
     <div className="home-page">
+      <header className="d-flex justify-content-center align-items-center p-3 mb-3">
+        <h1 className="text-center grow-title ">&#127804; Home</h1>
+      </header>
       <div className="stats-container">
         {error && <div className="alert alert-danger">{error}</div>}
 

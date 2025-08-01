@@ -36,22 +36,34 @@
 
 
 .schedule-container{
-  font-family: 'Pixelify Sans', sans-serif;
+ 
   display: flex;
-  align-items: center;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 60%;
   height: 70%;
-  margin-left: 20%;
-  margin-right: 20vw;
-  justify-content: center; /* Centers vertically */
-  align-items: center; /* Centers horizontally */
+  margin: 0 auto; /* Centers the container horizontally */
   position: relative;
-  z-index: 1; /* Ensures content is above the background */
-  color:#00A86F;
+  z-index: 1;
+  color: #00A86F;
   
+}
+
+.care-title{
+font-family: "Petit Formal Script", cursive;
+ font-size: 64px;
+ font-weight: 1000;
+ text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.5),
+     1px -1px 0 rgba(0, 0, 0, 0.5),
+    -1px  1px 0 rgba(0, 0, 0, 0.5),
+     1px  1px 0 rgba(0, 0, 0, 0.5);
 
 }
+
+
+
 
  
 
@@ -210,21 +222,35 @@ input:checked + .slider:before {
   background-image: linear-gradient(to right top, #00A86F,  #144e38);
 }
 
+.manual-controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  height: 20%;
+  border: 2px solid transparent;
+  border-radius: 50px;
+  margin: 0 auto; /* This will center it horizontally */
+  background-image: linear-gradient(to right top, #00A86F, #144e38);
+  gap: 3rem;
+}
+
 .manual-controls button {
-  margin: 0 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem !important;
+  margin: 0 !important; /* Override any Bootstrap margins */
   background-color: #cfeef3ff;
   color: rgba(3, 71, 57, 1);
   border: none;
   border-radius: 8px;
   transition: all 0.3s ease;
-
   animation: autoRevert 15s steps(1) forwards;
   animation-play-state: paused;
 }
 
 .manual-controls button:hover {
   box-shadow: 0 0 0 0.5rem #cfeef3ff;
+  color: rgba(3, 71, 57, 1) !important; /* Ensure text stays dark on hover */
 }
 
 .manual-controls button:active {
