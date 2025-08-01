@@ -28,9 +28,10 @@ const PlantContext = createContext<PlantContextType>({
 });
 
 export const PlantProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedPlant, setSelectedPlant] = useState<string>(() =>
-    loadFromStorage("plant", "")
-  );
+  // const [selectedPlant, setSelectedPlant] = useState<string>(() =>
+  //   loadFromStorage("plant", "")
+  // );
+  const [selectedPlant, setSelectedPlant] = useState("radish andes f1");
 
   useEffect(() => {
     saveToStorage("plant", selectedPlant);

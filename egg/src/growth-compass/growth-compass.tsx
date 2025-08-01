@@ -101,7 +101,7 @@ console.log("- error:", error);
       try {
         const slug = encodeURIComponent(selectedPlant);
 
-        const plantRes = await fetch(`https://open.plantbook.io/api/v1/plant/detail/${slug}`, {
+        const plantRes = await fetch("https://open.plantbook.io/api/v1/plant/detail/"+slug, {
           headers: {
             Authorization: `Token ${PLANTBOOK_TOKEN}`,
           },
