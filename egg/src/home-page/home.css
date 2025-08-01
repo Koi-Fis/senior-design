@@ -39,16 +39,6 @@
   height: 70%;
   margin: 0 auto; /* Centers the container horizontally */
   position: relative;
-  z-index: 1; /* Ensures content is above the background */
-  color:#00A86F;
-  
-
-}
-
-.timestamp.connected {
-  color: rgb(2, 217, 255);
-}
-
-.timestamp.disconnected {
-  color: rgb(255, 2, 2);
+  z-index: 1;
+  color: #00A86F;
 }
