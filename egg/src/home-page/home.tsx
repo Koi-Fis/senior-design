@@ -171,7 +171,7 @@ export default function HomePage(): JSX.Element {
         </header>
         
           <div className="carousel-container">
-            <Carousel fade controls = {false} indicators={true}>
+            <Carousel fade controls = {false} indicators={true} interval={4000}>
               {["egg1final", "egg2final", "egg3final", "egg4final", "egg5final", "egg6final", "egg7final", "egg8final"].map((imgName, i) => (
                 <Carousel.Item key={i}>
                   <img className="d-block w-100" src={`../src/assets/${imgName}.svg`} alt={`Slide ${i + 1}`} />
