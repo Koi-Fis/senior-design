@@ -381,6 +381,12 @@ function CareSchedule() {
               "Fan On",
               e.currentTarget
             );
+            manualControl(
+              "http://192.168.50.137/fan2/on",
+              "http://192.168.50.137/fan2/off",
+              "Fan On",
+              e.currentTarget
+            );
           }}
         >
           Toggle Fan
