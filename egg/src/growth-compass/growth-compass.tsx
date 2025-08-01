@@ -160,6 +160,9 @@ console.log("- error:", error);
   return (
     <PlantContext.Provider value={{ selectedPlant, setSelectedPlant }}>
       <div className="canvas-container">
+        <header className="d-flex justify-content-center align-items-center p-3 mb-3">
+          <h1 className="text-center grow-title ">&#127804; Growth Compass</h1>
+        </header>
         {/* Gauge Charts Section */}
         <div className="GaugeCharts">
           <div className="gauge-wrapper">

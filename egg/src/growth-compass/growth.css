@@ -32,6 +32,19 @@
   z-index: -1;
 }
 
+.grow-title{
+  color:#00A86F;
+  font-family: "Petit Formal Script", cursive;
+  font-size: 64px;
+  font-weight: 1000;
+  text-shadow: 
+    -1px -1px 0 rgba(0, 0, 0, 0.5),
+     1px -1px 0 rgba(0, 0, 0, 0.5),
+    -1px  1px 0 rgba(0, 0, 0, 0.5),
+     1px  1px 0 rgba(0, 0, 0, 0.5);
+}
+
+
 .GaugeCharts {
   position: relative;
   background: linear-gradient(135deg, #00A86F 0%, #144e38 100%);

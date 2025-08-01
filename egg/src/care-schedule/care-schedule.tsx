@@ -31,24 +31,49 @@ const removeFromStorage = (key: string) => {
 };
 
 //for manual controls
-const manualControl = async (urlOn: string, urlOff: string, action: string, duration: number = 15000) => {
+const manualControl = async (
+  urlOn: string,
+  urlOff: string,
+  action: string,
+  buttonElement?: HTMLButtonElement,
+  duration: number = 15000
+) => {
   try {
     console.log(`🔧 Manual ${action} ON:`, urlOn);
     const responseOn = await fetch(urlOn, { method: "GET" });
 
     if (responseOn.ok) {
-      console.log(`✅ ${action} ON successful - auto OFF in ${duration/1000}s`);
-      
+      console.log(
+        `✅ ${action} ON successful - auto OFF in ${duration / 1000}s`
+      );
+
+      // Add active class to button
+      if (buttonElement) {
+        buttonElement.classList.add("active");
+      }
+
       setTimeout(async () => {
         try {
           console.log(`🔧 Auto ${action} OFF:`, urlOff);
           const responseOff = await fetch(urlOff, { method: "GET" });
-          console.log(responseOff.ok ? `✅ ${action} OFF successful` : `❌ ${action} OFF failed`);
+          console.log(
+            responseOff.ok
+              ? `✅ ${action} OFF successful`
+              : `❌ ${action} OFF failed`
+          );
+
+          // Remove active class when action completes
+          if (buttonElement) {
+            buttonElement.classList.remove("active");
+          }
         } catch (error) {
           console.error(`❌ ${action} OFF error:`, error);
+          // Remove active class on error too
+          if (buttonElement) {
+            buttonElement.classList.remove("active");
+          }
         }
       }, duration);
-      
     } else {
       console.error(`❌ ${action} ON failed:`, responseOn.status);
     }
@@ -301,40 +326,49 @@ function CareSchedule() {
           />
         </div>
       </div>
-
       <div className="manual-controls mt-4">
         <button
           className="btn btn-primary"
-          onClick={() =>
-            {
-            manualControl("http://192.168.50.137/pump/on", "http://192.168.50.137/pump/off", "Water Now")
-            }
-          }
+          onClick={(e) => {
+            manualControl(
+              "http://192.168.50.137/pump/on",
+              "http://192.168.50.137/pump/off",
+              "Water Now",
+              e.currentTarget
+            );
+          }}
         >
           Water Now
         </button>
         <button
           className="btn btn-fan"
-          onClick={() =>
-            {
-            manualControl("http://192.168.50.137/fan1/on", "http://192.168.50.137/fan1/off", "Fan On")
-            }
-          }
+          onClick={(e) => {
+            manualControl(
+              "http://192.168.50.137/fan1/on",
+              "http://192.168.50.137/fan1/off",
+              "Fan On",
+              e.currentTarget
+            );
+          }}
         >
           Toggle Fan
         </button>
         <button
           className="btn btn-light"
-          onClick={() =>
-            {
-            manualControl("http://192.168.50.100/grow_light/on", "http://192.168.50.100/grow_light/off", "Light On")
-            }
-          }
+          onClick={(e) => {
+            manualControl(
+              "http://192.168.50.100/grow_light/on",
+              "http://192.168.50.100/grow_light/off",
+              "Light On",
+              e.currentTarget
+            );
+          }}
         >
           Toggle Light
         </button>
       </div>
-*/    </div>
+      
+    </div>
   );
 }
 
