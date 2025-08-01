@@ -10,6 +10,7 @@ import Row from 'react-bootstrap/Row';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import ListGroup from 'react-bootstrap/ListGroup';
+import Carousel from 'react-bootstrap/Carousel';
 import { useArduinoData } from '../hooks/useArduinoData';
 import { usePlant } from '../plant-context/plant-selection';
 
@@ -168,6 +169,18 @@ export default function HomePage(): JSX.Element {
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
           <h1 className="text-center grow-title ">&#127804; Home</h1>
         </header>
+        
+          <div className="carousel-container">
+            <Carousel fade controls = {false} indicators={true}>
+              {["egg1final", "egg2final", "egg3final", "egg4final", "egg5final", "egg6final", "egg7final", "egg8final"].map((imgName, i) => (
+                <Carousel.Item key={i}>
+                  <img className="d-block w-100" src={`../src/assets/${imgName}.svg`} alt={`Slide ${i + 1}`} />
+                </Carousel.Item>
+              ))}
+
+            </Carousel>
+          </div>
+
         <div className="stats-container">
           {error && <div className="alert alert-danger">{error}</div>}
 

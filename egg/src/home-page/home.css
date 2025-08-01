@@ -1,6 +1,6 @@
 @import '../App.css';
 
-.home-page {
+/* .home-page {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -11,8 +11,28 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  overflow-y: auto;
   z-index: 0;
   isolation: isolate;
+} */
+
+.home-page {
+  position: relative;
+  display: flex;
+  margin-left: 20vw;
+  width: calc(100vw - 20vw);
+  min-height: 100vh;
+  max-height: 100vh; /* Add this to constrain height */
+  justify-content: flex-start; /* Change from center to flex-start */
+  align-items: center; /* Change to center for horizontal alignment */
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 0;
+  isolation: isolate;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem 1rem 2rem 1rem; /* Increase top padding even more */
+  box-sizing: border-box; /* Add this for proper sizing */
 }
 
 .home-page::before {
@@ -35,10 +55,57 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 90%;
-  height: 70%;
+  width: calc(100vw - 20vw);
+  height: 100vh;
   margin: 0 auto; /* Centers the container horizontally */
   position: relative;
   z-index: 1;
   color: #00A86F;
 }
+
+.carousel-container {
+  max-width: 100%;
+  max-height: 100%;
+  /* overflow: hidden; */
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.carousel-container img {
+  width: 100%;
+  height: auto;
+  max-height: 400px; /* Or whatever fits your design */
+  object-fit: contain;
+}
+
+.sidebar {
+  position: fixed;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  width: 20vw;
+  height: 100vh;
+  background-image: linear-gradient(to right top, #144e38, #00A86F);
+  padding: 1rem;
+
+
+ /* Blurs what's behind the element */
+  border-right: solid 3px #1e232c59;
+  box-shadow: 0 0 200px 600px rgba(0, 0, 0, 1);
+
+
+
+}
+
+/* .logo-container {
+  background-image: url('./assets/EGGfinal3.svg') ;
+  background-size: contain;
+  position: absolute;
+  flex-direction: row;
+  background-repeat: no-repeat;
+  top: 10px;
+  left: 10px;
+  width: 19vw;
+  height: 10vw;
+ 
+} */
