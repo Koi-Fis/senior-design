@@ -49,6 +49,20 @@ def cron_schedule():
     subprocess.run(command, shell=True)
     return command
 
+@app.route("/api/remove_schedule")
+def remove_schedule():
+    task = request.args.get("task")
+    
+    if not task:
+        return "Error: No task specified", 400
+    
+    command = f"python /home/osboxes/senior-design/senior-design/egg/backend/scheduler.py remove {task}"
+    try:
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        return f"Remove command executed: {command}\nOutput: {result.stdout}"
+    except Exception as e:
+        return f"Error executing remove command: {str(e)}", 500
+
 
 @app.route("/api/pump", methods=["GET"])
 def start_pump():
