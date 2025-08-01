@@ -9,7 +9,28 @@ import Row from 'react-bootstrap/Row';
 // import LoadingButton from './loadingButton';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import ListGroup from 'react-bootstrap/ListGroup';
 import { useArduinoData } from '../hooks/useArduinoData';
+import { usePlant } from '../plant-context/plant-selection';
+
+// -----------------------------
+// Offload plant selection
+// -----------------------------
+const saveToStorage = <T,>(key: string, value: T) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Handle error
+  }
+};
+
+const removeFromStorage = (key: string) => {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Handle error
+  }
+};
 
 // -----------------------------
 // Types
@@ -23,16 +44,6 @@ type PlantDetailData = {
   min_soil_moist: number;
   max_soil_moist: number;
 };
-
-// type SensorData = {
-//   temperature_celcius: number;
-//   humidity: number;
-//   moisture_one: number;
-//   moisture_two: number;
-//   nitrogen: number;
-//   phosphorus: number;
-//   potassium: number;
-// };
 
 // -----------------------------
 // Config
@@ -75,39 +86,48 @@ function getStatus(value: number, min: number, max: number): string {
  */
 export default function HomePage(): JSX.Element {
   const { data, isConnected, isLoading, error, lastUpdate, refreshData } = useArduinoData();
-  const [selectedPlant, setSelectedPlant] = useState<string>("radish andes f1");
+  const { selectedPlant, setSelectedPlant } = usePlant();
   const [plantData, setPlantData] = useState<PlantDetailData | null>(null);
 
   // Local cache for display
-  const [displayData, setDisplayData] = useState<Array<{ title: string; text: number; status: string }>>([]);
+  const [displayData, setDisplayData] = useState<Array<{ title: string; text: number; status: string, expected: number }>>([]);
   const lastRef = useRef<string>('');
 
   // Whenever data updates, format and store in local state
   useEffect(() => {
     if (data && plantData) {
+      removeFromStorage("plant");
+      saveToStorage("plant", selectedPlant);
       const formatted = [
         { title: 'Temperature', text: data.temperature_celcius, 
           status: getStatus(data.temperature_celcius, plantData.min_temp, plantData.max_temp),
+          expected: (plantData.min_temp + plantData.max_temp) / 2,
         },
         { title: 'Humidity', text: data.humidity,
           status: getStatus(data.humidity, plantData.min_env_humid, plantData.max_env_humid),
+          expected: (plantData.min_env_humid + plantData.max_env_humid) / 2,
         },
-        { title: 'Heat Index', text: data.heat_index_celcius,
-          // status: getStatus(data.heat_index_celcius, )
-          status: 'No info'
-         },
+        // { title: 'Heat Index', text: data.heat_index_celcius,
+        //   // status: getStatus(data.heat_index_celcius, )
+        //   status: 'No info',
+        //   expected: 0,
+        //  },
         { title: 'Moisture Percentage', text: (normalizeMoisture(data.moisture_one) + normalizeMoisture(data.moisture_two)) / 2,
           status: getStatus(((normalizeMoisture(data.moisture_one) + normalizeMoisture(data.moisture_two)) / 2), 
                               plantData.min_soil_moist, plantData.max_soil_moist),
+          expected: 0,
          },
         { title: 'Nitrogen', text: data.nitrogen,
-          status: getStatus(data.nitrogen, 20, 20),
+          status: getStatus(data.nitrogen, 10, 10),
+          expected: 0,
          },
         { title: 'Phosphorus', text: data.phosphorus,
           status: getStatus(data.phosphorus, 10, 10),
+          expected: 0,
          },
         { title: 'Potassium', text: data.potassium,
           status: getStatus(data.potassium, 10, 10),
+          expected: 0,
          },
       ];
       const fingerprint = JSON.stringify(formatted);
@@ -202,11 +222,20 @@ export default function HomePage(): JSX.Element {
                 {displayData.map((card, idx) => (
                   <Col key={idx}>
                     <Card>
+
                       <Card.Body>
                         <Card.Title>{card.title}</Card.Title>
                         <Card.Text>{card.text}</Card.Text>
                         <Card.Footer>{card.status}</Card.Footer>
                       </Card.Body>
+                      
+                      {/* <ListGroup variant="flush">
+                        <ListGroup.Item>{card.title}</ListGroup.Item>
+                        <ListGroup.Item>{card.text}</ListGroup.Item>
+                        <ListGroup.Item>{card.status}</ListGroup.Item>
+                        <ListGroup.Item>{card.expected}</ListGroup.Item>
+                      </ListGroup> */}
+
                     </Card>
                   </Col>
                 ))}
