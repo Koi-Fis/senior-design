@@ -372,7 +372,7 @@ function CareSchedule() {
             );
           }}
         >
-          Water Now
+          Pump On
         </button>
         <button
           className="btn btn-fan"
@@ -391,7 +391,7 @@ function CareSchedule() {
             );
           }}
         >
-          Toggle Fan
+          Fan On
         </button>
         <button
           className="btn btn-light"
@@ -404,7 +404,7 @@ function CareSchedule() {
             );
           }}
         >
-          Toggle Light
+          Light On
         </button>
       </div>
       
