@@ -1,13 +1,13 @@
 {
     "water_plants": {
-        "frequency": "",
+        "frequency": "daily",
         "last_run": "",
-        "init_date": ""
+        "init_date": "2025-08-01T00:45:00.128325"
     },
     "run_fans": {
-        "frequency": "",
+        "frequency": "daily",
         "last_run": "",
-        "init_date": ""
+        "init_date": "2025-08-01T00:45:00.135997"
     },
     "power_lights": {
         "frequency": "",

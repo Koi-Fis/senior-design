@@ -2,6 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./care-schedule.css";
 import { useState, useEffect } from "react";
 import useElectronSchedule from "./useElectronSchedule"; // Import the new hook
+import "./useElectronSchedule"
 
 type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";
 
@@ -29,6 +30,32 @@ const removeFromStorage = (key: string) => {
     // Handle error
   }
 };
+
+const parseTime = (timeString: string) => {
+  if (!timeString) return { hours: '00', minutes: '00', period: 'AM' };
+
+  const [hours24, minutes] = timeString.split(':').map(Number);
+
+  let hours12 = hours24;
+  let period = 'AM';
+
+  if (hours24 === 0) {
+    hours12 = 12;
+  } else if (hours24 === 12) {
+    period = 'PM';
+  } else if (hours24 > 12) {
+    hours12 = hours24 - 12;
+    period = 'PM';
+  }
+
+  return {
+    hours: hours12.toString().padStart(2, '0'),
+    minutes: minutes.toString().padStart(2, '0'),
+    period: period
+  };
+};
+
+
 
 //for manual controls
 const manualControl = async (
@@ -235,14 +262,17 @@ function CareSchedule() {
     }
   }, [fanTime, fanFreq, fanEnabled]);
 
+
   // Use the new Electron-based scheduling hooks instead of the old ones
+  const waterTimeParsed = parseTime(waterTime);
   useElectronSchedule({
     id: "water",
     enabled: waterEnabled,
     time: waterTime,
     frequency: waterFreq,
-    urlOn: "http://192.168.50.137/pump/on",
-    urlOff: "http://192.168.50.137/pump/off",
+    urlOn: "http://127.0.0.1:5173/api/schedule?task=water_plants&hour="+waterTimeParsed.hours+"&min="+waterTimeParsed.minutes+"&ampm="+ waterTimeParsed.period+"&freq="+waterFreq,
+
+  
   });
 
   useElectronSchedule({
@@ -251,16 +281,18 @@ function CareSchedule() {
     time: lightTime,
     frequency: lightFreq,
     urlOn: "http://192.168.50.100/grow_light/on",
-    urlOff: "http://192.168.50.100/grow_light/off",
+    
   });
+
+  const fanTimeParsed = parseTime(fanTime);
 
   useElectronSchedule({
     id: "fan",
     enabled: fanEnabled,
     time: fanTime,
     frequency: fanFreq,
-    urlOn: "http://192.168.50.137/fan1/on",
-    urlOff: "http://192.168.50.137/fan1/off",
+    urlOn: "http://127.0.0.1:5173/api/schedule?task=run_fans&hour="+fanTimeParsed.hours+"&min="+fanTimeParsed.minutes+"&ampm="+ fanTimeParsed.period+"&freq="+fanFreq,
+    
   });
 
   return (

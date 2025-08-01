@@ -308,30 +308,16 @@ async function executeDeviceCommand(urls) {
   }
 }
 function scheduleDevice(scheduleData) {
-  const { id, time, frequency, urlOn, urlOff } = scheduleData;
+  const { id, time, frequency, urlOn } = scheduleData;
   clearSchedule(id);
   function createSchedule() {
     const next = getNextSchedule(time, frequency);
     const delay = next.getTime() - Date.now();
     console.log(`Scheduling ${id} for ${next.toLocaleString()}`);
     const onTimer = setTimeout(async () => {
-      const onTime = Date.now();
       try {
         console.log(`Turning ON ${id}`);
         await executeDeviceCommand(urlOn);
-        const offDelay = Math.max(0, 15e3 - (Date.now() - onTime));
-        const offTimer = setTimeout(async () => {
-          try {
-            console.log(`Turning OFF ${id}`);
-            await executeDeviceCommand(urlOff);
-          } catch (error) {
-            console.error(`Failed to turn off ${id}:`, error);
-          }
-        }, offDelay);
-        const schedule = activeSchedules.get(id);
-        if (schedule) {
-          schedule.offTimer = offTimer;
-        }
       } catch (error) {
         console.error(`Failed to turn on ${id}:`, error);
       }

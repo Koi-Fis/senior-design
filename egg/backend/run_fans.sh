@@ -9,4 +9,4 @@ PYTHON="/usr/bin/python3"
 SCRIPT="/home/osboxes/senior-design/senior-design/egg/backend/tasks.py"
 
 # Run the task
-$PYTHON $SCRIPT run_fans 5
+$PYTHON $SCRIPT run_fans 1

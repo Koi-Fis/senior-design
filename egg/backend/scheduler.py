@@ -7,7 +7,7 @@ from datetime import datetime
 # python [task] [time12hr] [frequency]
 # Ex: python scheduler.py 'water_plants' '08:15' 'daily'
 
-ABS_DIR = os.getcwd() + "/"
+ABS_DIR = os.getcwd() + "/backend/"
 
 # Frontend passes task, time, and frequency.
 # 1. Check for and remove prior jobs

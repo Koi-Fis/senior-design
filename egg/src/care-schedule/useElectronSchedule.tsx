@@ -9,7 +9,7 @@ interface ElectronScheduleOptions {
   time: string;            // in "HH:mm" format
   frequency: Frequency;    // repetition pattern
   urlOn: string | string[];
-  urlOff: string | string[];
+  
 }
 
 /**
@@ -21,7 +21,7 @@ function useElectronSchedule({
   time,
   frequency,
   urlOn,
-  urlOff,
+  
 }: ElectronScheduleOptions) {
   useEffect(() => {
     // Ensure the schedule API bridge is available
@@ -30,7 +30,7 @@ function useElectronSchedule({
       return;
     }
 
-    const scheduleData = { id, enabled, time, frequency, urlOn, urlOff };
+    const scheduleData = { id, enabled, time, frequency, urlOn};
 
     // Create or update the schedule in the main process
     window.electronAPI.schedule
@@ -50,7 +50,11 @@ function useElectronSchedule({
         });
       }
     };
-  }, [id, enabled, time, frequency, urlOn, urlOff]);
+    
+
+
+
+  }, [id, enabled, time, frequency, urlOn]);
 
   /**
    * Manually clear the schedule
@@ -64,5 +68,9 @@ function useElectronSchedule({
 
   return { clearSchedule };
 }
+
+
+
+
 
 export default useElectronSchedule;

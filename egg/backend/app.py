@@ -45,7 +45,7 @@ def cron_schedule():
     min = request.args.get("min")
     ampm = request.args.get("ampm")
     freq = request.args.get("freq")
-    command = f"python scheduler.py {task} {hour}:{min}_{ampm} {freq}"
+    command = f"python /home/osboxes/senior-design/senior-design/egg/backend/scheduler.py {task} {hour}:{min}_{ampm} {freq}"
     subprocess.run(command, shell=True)
     return command
 

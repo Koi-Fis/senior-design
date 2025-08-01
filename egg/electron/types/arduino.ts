@@ -63,7 +63,7 @@ export interface ScheduleData {
   time:       string;                // "HH:mm"
   frequency:  'daily' | 'weekly' | 'bi-weekly' | 'every other day';
   urlOn:      string | string[];
-  urlOff:     string | string[];
+
 }
 
 /**

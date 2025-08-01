@@ -51,7 +51,7 @@ interface ScheduleData {
   time: string;
   frequency: Frequency;
   urlOn: string | string[];
-  urlOff: string | string[];
+ 
 }
 
 // Store active schedules
@@ -93,7 +93,7 @@ async function executeDeviceCommand(urls: string | string[]) {
 }
 
 function scheduleDevice(scheduleData: ScheduleData) {
-  const { id, time, frequency, urlOn, urlOff } = scheduleData;
+  const { id, time, frequency, urlOn} = scheduleData;
   
   // Clear existing schedule if any
   clearSchedule(id);
@@ -105,29 +105,13 @@ function scheduleDevice(scheduleData: ScheduleData) {
     console.log(`Scheduling ${id} for ${next.toLocaleString()}`);
     
     const onTimer = setTimeout(async () => {
-      const onTime = Date.now();
+      
       
       try {
         // Turn device ON
         console.log(`Turning ON ${id}`);
         await executeDeviceCommand(urlOn);
         
-        // Schedule OFF after 15 seconds
-        const offDelay = Math.max(0, 15000 - (Date.now() - onTime));
-        const offTimer = setTimeout(async () => {
-          try {
-            console.log(`Turning OFF ${id}`);
-            await executeDeviceCommand(urlOff);
-          } catch (error) {
-            console.error(`Failed to turn off ${id}:`, error);
-          }
-        }, offDelay);
-        
-        // Update the stored timers
-        const schedule = activeSchedules.get(id);
-        if (schedule) {
-          schedule.offTimer = offTimer;
-        }
         
       } catch (error) {
         console.error(`Failed to turn on ${id}:`, error);
