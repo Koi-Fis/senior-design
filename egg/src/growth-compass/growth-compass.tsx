@@ -48,6 +48,7 @@ const plantOptions = [
   { key: "radish andes f1", label: "Radish" },
   { key: "tomato motto f1", label: "Tomato" },
   { key: "spinacia oleracea", label: "Spinach" },
+  { key: "ocimum basilicum", label: "Basil"},
 ];
 
 // -----------------------------
@@ -163,6 +164,7 @@ console.log("- error:", error);
         <header className="d-flex justify-content-center align-items-center p-3 mb-3">
           <h1 className="text-center grow-title ">&#127804; Growth Compass</h1>
         </header>
+        <h2 className="plant-title">{plantOptions.find((opt) => opt.key === selectedPlant)?.label}</h2>
         {/* Gauge Charts Section */}
         <div className="GaugeCharts">
           <div className="gauge-wrapper">
@@ -259,7 +261,7 @@ console.log("- error:", error);
         <div className="content-row">
           <div className="radish-info">
             <h2>Growth Compass – Sensor vs Ideal</h2>
-            <h3>Currently Selected Plant: {plantOptions.find((opt) => opt.key === selectedPlant)?.label}</h3>
+          
             {/* <DropdownButton
               id="plant-dropdown"
               title={

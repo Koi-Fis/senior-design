@@ -54,6 +54,7 @@ const plantOptions = [
   { key: "radish andes f1", label: "Radish" },
   { key: "tomato motto f1", label: "Tomato" },
   { key: "spinacia oleracea", label: "Spinach" },
+  { key: "ocimum basilicum", label: "Basil"},
 ];
 
 // -----------------------------
