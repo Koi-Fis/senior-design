@@ -189,8 +189,9 @@ function DeviceTab({
 function CareSchedule() {
   const TABS = [
     { key: "water", label: "Water" },
-    { key: "grow_light", label: "Grow Light" },
     { key: "fan", label: "Fan" },
+    { key: "grow_light", label: "Grow Light" },
+  
   ];
   const [activeTab, setActiveTab] = useState<string>(TABS[0].key);
 
@@ -335,17 +336,6 @@ function CareSchedule() {
             activeTab={activeTab}
           />
           <DeviceTab
-            label="Grow Light"
-            id="grow_light"
-            time={lightTime}
-            setTime={setLightTime}
-            frequency={lightFreq}
-            setFrequency={setLightFreq}
-            enabled={lightEnabled}
-            setEnabled={setLightEnabled}
-            activeTab={activeTab}
-          />
-          <DeviceTab
             label="Fan"
             id="fan"
             time={fanTime}
@@ -356,6 +346,18 @@ function CareSchedule() {
             setEnabled={setFanEnabled}
             activeTab={activeTab}
           />
+          <DeviceTab
+            label="Grow Light"
+            id="grow_light"
+            time={lightTime}
+            setTime={setLightTime}
+            frequency={lightFreq}
+            setFrequency={setLightFreq}
+            enabled={lightEnabled}
+            setEnabled={setLightEnabled}
+            activeTab={activeTab}
+          />
+        
         </div>
       </div>
       <div className="manual-controls mt-4">
