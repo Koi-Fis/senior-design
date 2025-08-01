@@ -9,11 +9,12 @@ import {
   Legend,
 } from "recharts";
 import GaugeChart from "react-gauge-chart";
-import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
+// import Dropdown from "react-bootstrap/Dropdown";
+// import DropdownButton from "react-bootstrap/DropdownButton";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./growth.css";
 import { useArduinoData } from "../hooks/useArduinoData";
+import { usePlant } from '../plant-context/plant-selection';
 
 // -----------------------------
 // Types
@@ -71,7 +72,7 @@ function normalizeMoisture(raw: number): number {
 // Main Component
 // -----------------------------
 export default function PlantRadarComparison() {
-  const [selectedPlant, setSelectedPlant] = useState<string>("radish andes f1");
+  const { selectedPlant, setSelectedPlant } = usePlant();
   const [plantData, setPlantData] = useState<PlantDetailData | null>(null);
   
   // Use the new Arduino data hook instead of direct fetch
@@ -258,8 +259,8 @@ console.log("- error:", error);
         <div className="content-row">
           <div className="radish-info">
             <h2>Growth Compass – Sensor vs Ideal</h2>
-
-            <DropdownButton
+            <h3>Currently Selected Plant: {plantOptions.find((opt) => opt.key === selectedPlant)?.label}</h3>
+            {/* <DropdownButton
               id="plant-dropdown"
               title={
                 plantOptions.find((opt) => opt.key === selectedPlant)?.label ||
@@ -275,7 +276,7 @@ console.log("- error:", error);
                   {opt.label}
                 </Dropdown.Item>
               ))}
-            </DropdownButton>
+            </DropdownButton> */}
 
             {radarData.length > 0 && (
               <ResponsiveContainer width="100%" height={300}>
