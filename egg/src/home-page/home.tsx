@@ -243,7 +243,10 @@ export default function HomePage(): JSX.Element {
                       <Card.Body>
                         <Card.Title>{card.title}</Card.Title>
                         <Card.Text>{card.text}</Card.Text>
-                        <Card.Footer>{card.status}</Card.Footer>
+                        <Card.Footer className={card.status === "Too Low" ? "text-danger"
+                                      : card.status === "Too High" ? "text-danger"
+                                      : "text-success"}>
+                                      {card.status}</Card.Footer>
                       </Card.Body>
                       
                       {/* <ListGroup variant="flush">
