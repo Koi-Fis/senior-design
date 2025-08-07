@@ -15,7 +15,7 @@ window.ipcRenderer.on('main-process-message', (_event, message) => {
   console.log(message)
 })
 
-//make it so that root does not have scrollbars
+//main root does not have scrollbars
 document.documentElement.style.overflow = 'hidden';
-//make it so that body does not have scrollbars
+
 document.body.style.overflow = 'hidden';

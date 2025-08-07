@@ -9,7 +9,6 @@ import Row from 'react-bootstrap/Row';
 // import LoadingButton from './loadingButton';
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import ListGroup from 'react-bootstrap/ListGroup';
 import Carousel from 'react-bootstrap/Carousel';
 import { useArduinoData } from '../hooks/useArduinoData';
 import { usePlant } from '../plant-context/plant-selection';

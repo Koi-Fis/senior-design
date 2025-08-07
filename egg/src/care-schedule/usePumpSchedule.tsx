@@ -1,3 +1,5 @@
+{/*unused logic*/}
+
 import { useEffect, useRef } from "react";
 
 type Frequency = "daily" | "weekly" | "bi-weekly" | "every other day";

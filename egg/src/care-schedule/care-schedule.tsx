@@ -147,7 +147,7 @@ function DeviceTab({
         <input
           type="time"
           id={`${id}-time`}
-          className="form-control form-control-sm me-2 bruh"
+          className="form-control form-control-sm me-2 water-btn"
           value={time}
           onChange={(e) => setTime(e.target.value)}
           disabled={enabled}
@@ -159,7 +159,7 @@ function DeviceTab({
         </label>
         <select
           id={`${id}-frequency`}
-          className="form-select form-select-sm me-2 bruh"
+          className="form-select form-select-sm me-2 water-btn"
           value={frequency}
           onChange={(e) => setFrequency(e.target.value as Frequency)}
           disabled={enabled}
